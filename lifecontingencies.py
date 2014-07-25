@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #    pyrisk: A python library for simple actuarial calculations
-#    Version: 0.0.1 - Feb 2014
-#    Copyright (C) 2013 Francisco Garate
+#    Version: 1.2 - July 2014
+#    Copyright (C) 2014 Francisco Garate
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 # Actuarial notation -------------------
 def qx(nt,x):
@@ -61,7 +62,7 @@ def px(nt,x):
 def tpx(nt,x,t):
     """ tqx : Returns the probability that x will survive within t years """
     """ npx : Returns n years survival probability at age x """
-    return (lx(nt,x+t) / lx(nt,x))
+    return lx(nt,x+t) / lx(nt,x)
 
 def tqx(nt,x,t):
     """ nqx : Returns the probability to die within n years at age x """
@@ -144,7 +145,6 @@ def nEx(nt,x,n):
     Pure endowment benefits are conditional on the survival of the policyholder. (v^n * npx) """
     return Dx(nt,x+n)/Dx(nt,x)
 
-# m, Whole life insurance: the 1/mthly case, Ax(m)
 # Actuarial present value
 
 # Whole life insurance ---
@@ -154,13 +154,13 @@ def Ax(nt,x):
     return Mx(nt,x)/Dx(nt,x)
 
 # Term insurance ---
-def AAxn(nt,x,n):
+def Axn(nt,x,n):
     """ (A^1)x:n : Returns the EPV (net single premium) of a term insurance. """
     return (Mx(nt,x)-Mx(nt,x+n))/Dx(nt,x)
 
 # Endowment insurance ---
-def Axn(nt,x,n):
-    """ Axn : Returns the EPV of a endowment insurance. 
+def AExn(nt,x,n):
+    """ AExn : Returns the EPV of a endowment insurance. 
     An endowment insurance provides a combination of a term insurance and a pure endowment """
     return (Mx(nt,x)-Mx(nt,x+n))/Dx(nt,x) + Dx(nt,x+n)/Dx(nt,x)
 
@@ -172,7 +172,7 @@ def tAx(nt,x,t):
 def tAxn(nt,x,n,t):
     pass
 
-# IAx ---
+# IAx  ---
 
 def IAx(nt,x):
     """ This function evaluates the APV of an increasing life insurance. """
@@ -200,49 +200,47 @@ def qtAx(nt,x,t,q):
 def qtAxn(nt,x,t,q):
     pass
 
-def ActuarialPresentValue():
-    pass
 
-# Life annuities ------------------
-
-def ax(nt,x,m=1):
-    """ ax : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life immediate annuity). Payable 'm' per year at the ends of the period """
-    return (Nx(nt,x)/Dx(nt,x)-1) + (float(m-1)/float(m*2))
-
-def aax(nt,x,m=1):
-    """ äx : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life immediate annuity). Payable 'm' per year at the beginning of the period """
-    return Nx(nt,x)/Dx(nt,x) - (float(m-1)/float(m*2))
-
-def axn(nt,x,n,m=1):
-    """ axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity. Term immediate annuity. Payable 'm' per year at the ends of the period """
-    if m == 1:
-        return (Nx(nt,x+1)-Nx(nt,x+n+1))/Dx(nt,x)
-    else:
-        return (Nx(nt,x+1)-Nx(nt,x+n+1))/Dx(nt,x) + ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,n)))
+# Discrete Life Annuities ------------------
 
 def aaxn(nt,x,n,m=1):
-    """ äxn : Return the actuarial present value of a (immediate) temporal annuity (term certain). Term immediate annuity. Payable 'm' per year at the beginning of the period """
+    """ äxn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary life annuity-anticipatory. Payable 'm' per year at the beginning of the period """
     if m == 1:
         return (Nx(nt,x)-Nx(nt,x+n))/Dx(nt,x)
     else:
         return (Nx(nt,x)-Nx(nt,x+n))/Dx(nt,x) - ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,n)))
-         
-def tax(nt,x,t,m=1):
-    """ n/ax : Return the actuarial present value of a deferred annuity (deferred n years). Payable 'm' per year at the ends of the period """
-    return Nx(nt,x+t+1)/Dx(nt,x) + ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,t)))
+
+def axn(nt,x,n,m=1):
+    """ axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary life annuity-late. Payable 'm' per year at the ends of the period """
+    if m == 1:
+        return (Nx(nt,x+1)-Nx(nt,x+n+1))/Dx(nt,x)
+    else:
+        return (Nx(nt,x+1)-Nx(nt,x+n+1))/Dx(nt,x) + ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,n)))
+        
+def aax(nt,x,m=1):
+    """ äx : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life annuity-anticipatory). Payable 'm' per year at the beginning of the period """
+    return Nx(nt,x)/Dx(nt,x) - (float(m-1)/float(m*2))
+
+def ax(nt,x,m=1):
+    """ ax : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life annuity-late). Payable 'm' per year at the ends of the period """
+    return (Nx(nt,x)/Dx(nt,x)-1) + (float(m-1)/float(m*2))
+
+def taaxn(nt,x,n,m=1):
+    pass
+
+def taxn(nt,x,n,m=1):
+    pass
 
 def taax(nt,x,t,m=1):
-    """ n/äx : Return the actuarial present value of a deferred annuity (deferred n years). Payable 'm' per year at the beginning of the period """
+    """ n/äx : Return the actuarial present value of a deferred annuity (deferred n years): n-year deferred whole life annuity-anticipatory. Payable 'm' per year at the beginning of the period """
     return Nx(nt,x+t)/Dx(nt,x) - ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,t)))
 
-# Arithmetically increasing annuities (unitary) ----------------- 
-def Iaax(nt,x,*args):
-    """ (Iä)x : Returns the present value of annuity-certain at the beginning of the first year and increasing linerly """
-    return Sx(nt,x)/Dx(nt,x)
+def tax(nt,x,t,m=1):
+    """ n/ax : Return the actuarial present value of a deferred annuity (deferred n years): n-year deferred whole life annuity-late. Payable 'm' per year at the ends of the period """
+    return Nx(nt,x+t+1)/Dx(nt,x) + ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,t)))
 
-def Iax(nt,x,*args):
-    """ (Ia)x : Returns the present value of annuity-certain at the end of the first year and increasing linerly """
-    return Sx(nt,x+1) / Dx(nt,x)
+
+# Arithmetically increasing annuities (unitary) ----------------- 
 
 def Iaaxn(nt,x,n,*args):
     """ during a term certain, IAn """
@@ -251,6 +249,20 @@ def Iaaxn(nt,x,n,*args):
 def Iaxn(nt,x,n,*args):
     """ during a term certain, IAn """
     return (Sx(nt,x+1) - Sx(nt,x+n+1) - n * Nx(nt,x+n+1)) / Dx(nt,x)
+
+def Iaax(nt,x,*args):
+    """ (Iä)x : Returns the present value of annuity-certain at the beginning of the first year and increasing linerly. Arithmetically increasing annuity-anticipatory """
+    return Sx(nt,x)/Dx(nt,x)
+
+def Iax(nt,x,*args):
+    """ (Ia)x : Returns the present value of annuity-certain at the end of the first year and increasing linerly. Arithmetically increasing annuity-late """
+    return Sx(nt,x+1) / Dx(nt,x)
+
+def Iaaxn(nt,x,n):
+    pass
+
+def Iaxn(nt,x,n):
+    pass
 
 def Itaax(nt,x,t):
     """ deffered t years """
@@ -261,42 +273,31 @@ def Itax(nt,x,t):
     return (Sx(nt,x+1) - Sx(nt,x+t+1)) / Dx(nt,x)
 
 # Geometrically increasing annuities ---------------
+def qax(nt,x,q,m=1):
+    """ geometrica """
+    i = float(nt[1])
+    q = float(q)
+    j = (i-q)/(1+q)
+    return ax([nt[0],j],x,m)
 
 def qaax(nt,x,q,m=1):
     """ geometrica """
     i = float(nt[1])
     q = float(q)
-    return aax([nt[0],(i-q)/(1+q)],x,m)
-
-def qaax2(nt,x,q,m=1):
-    """ geometrica """
-    i = float(nt[1])
-    q = float(q)
-    return aax([nt[0],(1+i-q)/q],x,m)
-
-def qax(nt,x,q,m=1):
-    """ geometrica """
-    i = float(nt[1])
-    q = float(q)
-    return ax([nt[0],(1+i-q)/q],x,m)
-
-def qaaxn(nt,x,n,q,m=1):
-    """ geometrica """
-    i = float(nt[1])
-    q = float(q)
-    return aaxn([nt[0],(i-q)/(1+q)],x,n,m)
-
-def qaaxn2(nt,x,n,q,m=1):
-    """ geometrica """
-    i = float(nt[1])
-    q = float(q)
-    return aaxn([nt[0],(1+i-q)/q],x,n,m)
+    j = (i-q)/(1+q)
+    return aax([nt[0],j],x,m)
 
 def qaxn(nt,x,n,q,m=1):
     """ geometrica """
     i = float(nt[1])
     q = float(q)
     return axn([nt[0],(1+i-q)/q],x,n,m)
+
+def qaaxn(nt,x,n,q,m=1):
+    """ geometrica """
+    i = float(nt[1])
+    q = float(q)
+    return aaxn([nt[0],(i-q)/(1+q)],x,n,m)
 
 def qtax(nt,x,t,q,m=1):
     """ geometrica """
@@ -310,76 +311,100 @@ def qtaax(nt,x,t,q,m=1):
     q = float(q)
     return taax([nt[0],(i-q)/(1+q)],x,t) - ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,t)))
 
-def qtaax2(nt,x,t,q,m=1):
-    """ geometrica """
-    i = float(nt[1])
-    q = float(q)
-    return taax([nt[0],(1+i-q)/q],x,t) - ((float(m-1)/float(m*2)) * (1 - nEx(nt,x,t)))
 
 # Annuity formula ------------
 
 def annuity(nt,x,n,p,m=1,*args):
-    """ Payable 'm' per year """
-    # ax(nt,x,n,0/1,m=1,*c,a/g,-d)
     l = len(args)
-    deff = post = False
+    post = False
+    incr = False
+    deff = False
+    arit = False
+    wh_l = False
+
+    if isinstance(n,basestring) or n == 99:
+        wh_l = True
+    else:
+        pass
+
+    if isinstance(m,int) and m >=0 and l == 0:
+        pass
+
+    elif l == 0 and isinstance(m,list):
+        args = m
+        m = 1
+    elif l == 0 and int(m) < 0:
+        args = False
+        deff = m
+        m = 1
+    elif l == 1 and isinstance(args[0],int):
+        deff = args[0]
+        args = False
+    elif l == 2:
+        if isinstance(args[0],list):
+            deff = args[1]
+        elif isinstance(args[0],int):
+            deff = int(args[0])
+            args = args[1]
+        else:
+            pass
+    else:
+        pass
+    
     if p == 1:
         post = True
     elif p == 0:
         pass
     else:
-        print 'Error: payment value is 0 or 1' 
-    if m < 0:
-        deff = True
-        t = -m
-        m = 1
-    else:
-        pass
+        print 'Error: payment value is 0 or 1'
+
     if args:
-        if isinstance(args[-1],basestring):
-            pass
+        if 'a' in args[0][0]:
+            incr = True
+            arit = True
+        elif 'g' in args[0][0]:
+            incr = True
         else:
-            try:
-                print args[-1] **(0.5)
-            except:
-                deff = True
-                #m = 1
-                t = -args[-1]
-            else:
-                pass
+            return "Error: increasing value is 'a' or 'g'"
     else:
         pass
 
-    if deff:
-        if post:
-            return tax(nt,x,t,m)
-        else:
-            return taax(nt,x,t,m)
-    
-    if 'a' in args:
-        if l == 2:
-            c = args[0]
-        else:
-            c = m
-            m = 1
-        print 'arit lineal al' , c, "m es", m
-        #Iaaxn(nt,x,n,*args)
-        return Iaaxn(nt,x,n,c)  
-    elif 'g' in args:
-        if l == 2:
-            c = args[0]
-        else:
-            c = m
-            m = 1
-        #print 'geo al' , c, "m es", m
-        if post:
-            return qaxn(nt,x,n,c,m)
-        else:
-            return qaaxn(nt,x,n,c,m)
+    if incr and not arit:
+        incr = False
+        i = 0.01
     else:
-        c = 0
-        #print 'lineal al' , c, "m es", m
-        if post:
-            return axn(nt,x,n,m)
-        else:
-            return aaxn(nt,x,n,m)
+        pass
+
+    if not incr and not deff and not wh_l and not post:
+        return 'aaxn'
+    elif not incr and not deff and not wh_l and post:
+        return 'axn'
+    elif not incr and not deff and wh_l and not post:
+        return 'aax'
+    elif not incr and not deff and wh_l and post:
+        return 'ax'
+    elif not incr and deff and not wh_l and not post:
+        return 'taaxn'
+    elif not incr and deff and not wh_l and post:
+        return 'taxn'
+    elif not incr and deff and wh_l and not post:
+        return 'taax'
+    elif not incr and deff and wh_l and post:
+        return 'tax'
+    elif incr and not deff and not wh_l and not post:
+        return 'Iaaxn'
+    elif incr and not deff and not wh_l and post:
+        return 'Iaxn'
+    elif incr and not deff and wh_l and not post:
+        return 'Iaax'    
+    elif incr and not deff and wh_l and post:
+        return 'Iax'
+    elif incr and deff and not wh_l and not post:
+        return 'Itaaxn'
+    elif incr and deff and not wh_l and post:
+        return 'Itaxn'
+    elif incr and deff and wh_l and not post:
+        return 'Itaax'    
+    else:
+        #elif incr and deff and wh_l and post:
+        return 'Itax'
