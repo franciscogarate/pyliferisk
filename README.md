@@ -70,7 +70,7 @@ The names of the formulas follow the International Actuarial Notation and are ea
 The **reserved variables** (in addition of python languages) are the following:
 
 * ``i`` = interest rate. The effective rate of interest, namely, the total interest earned in a year.
-* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntaxis: nt=[GKM95,2] (Note: GKM95 colum must be in mortalitytables.py)
+* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=[GKM95,2] (Note: GKM95 colum must be in mortalitytables.py)
 * ``x`` = The age of the insured.
 * ``n`` = The horizon (term of insurance) in years or payment duration
 * ``m`` = Number of fractional payments per period. If missing, m is set as 0.
@@ -93,7 +93,7 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 * ``p`` = Moment of payment. Syntaxis: 0 = begining of each period, 1 = end of each period,
 * ``'a'`` = Arithmetical 
 * ``'g'`` = Geometrical
-* ``c`` = The increase rate. Syntasis: ['g',c] or ['a',c]. For example, ['g',0.03]
+* ``c`` = The increase rate. Syntax: ['g',c] or ['a',c]. For example, ['g',0.03]
 * ``-d`` = The n-years deferring period as negative number. 
 
 **Example**:
@@ -108,10 +108,11 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 from pyliferisk import annuity
 
 nt=[INE2004,2]
-x = 50
-n = 15
+x = 60 # age
+n = 15 # term
+d = 5  # 5 years deferred
 
-return 0. 
+return annuity(nt,x,n,0,-d)
 </pre>
 
 #<a name="potential-uses"></a><h2>Potential uses</h2>
@@ -196,10 +197,11 @@ or, if only like to use specific functions:
 For beginners, I highly recommended **Sublime Text 2**: [http://www.sublimetext.com/](http://www.sublimetext.com/). Minimal and non-necessary settings. Ideal for testing. Sublime Text uses a custom UI toolkit, optimized for speed and beauty, and may be downloaded and evaluated for free.
 
 Eclipse is an integrated development environment (IDE) recommended especially for python projects with a lot of files. 
-Aptana Studio 3 (based on Eclipse) was used to write and test this library. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org).
+**Aptana Studio 3** (based on Eclipse) was used to write and test this library. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org)).
 
 For professional use, Enthought Inc. develops the Canopy platform ([https://www.enthought.com/products/canopy/](https://www.enthought.com/products/canopy/)): a comprehensive Python analysis environment, with financial case studies: Risk calculation for financial analysis ([https://www.enthought.com/services/consulting/case-studies/VaR](https://www.enthought.com/services/consulting/case-studies/VaR)).
 
+Note: Apart of these programs, Python must be installed in the computer.
 
 #<a name="links"></a><h2>Links</h2>
 
@@ -210,7 +212,7 @@ For professional use, Enthought Inc. develops the Canopy platform ([https://www.
 
 #<a name="books"></a><h2>Books</h2>
 
-The author is checking the library with the examples from following textbook:
+The author is checking the library with the examples from the following textbooks:
 - Actuarial Mathematics for Life Contingent Risks (David C. M. Dickson, Mary R. Hardy and Howard R. Waters) Cambridge University Press, 2009.
 - Actuarial Mathematics (2nd Edition), Bowers et al.  Society of Actuaries, 1997.
 - Matemática de los Seguros de Vida, (Gil Fana J.A., Heras Matínez A. and Vilar Zanón J.L.) Fundación Mapfre Estudios, 1999.
