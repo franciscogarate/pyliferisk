@@ -3,7 +3,7 @@ Pyliferisk is a python library for life actuarial calculations, simple, powerful
 
 Date: 2014-07-01<br/>
 Version: 1.2<br/>
-Author: Francisco Garate (@garpa)<br/>
+Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
 Site: github.com/franciscogarate/pyliferisk<br/>
 
 ![Picture](http://www.garpa.net/github/pyliferisk.png)
@@ -25,6 +25,8 @@ http://docs.readthedocs.org/en/latest/getting_started.html#write-your-docs
 * [Other libraries](#other-libraries)
 * [Installation](#installation)
 * [Links](#links)
+* [Books](#books)
+
 
 #<a name="introduction"></a><h2>Introduction</h2>
 
@@ -42,11 +44,11 @@ It is ideal not only for academic purposes, but also for professional use by act
 
 This library is distributed as a single file module (``lifecontingencies.py``) and has no dependencies other than the Python Standard Library.
 
-While pyliferisk library version 1.1 incorporated some useful basic functions to calculate the present value of cash-flows (it does present value calculations of life payment contingent) using fixed or variable discount rates, it has been discontinued from version 2 onwards. I highly recommend to use other mathematical libraries (such as SciPy and NumPy) since they are better for this purposes, moreover other potential uses such as random number generation, interpolation, etc. Please, see the section [Other libraries](#other-libraries) to known how to increase the funcionalities (as import results in MS Excel, ESG, C++ integration, etc...)
+While pyliferisk library version 1.1 incorporated some useful basic functions to calculate the present value of cash-flows (it does present value calculations of life payment contingent) using fixed or variable discount rates, it has been discontinued from version 1.2 onwards. I highly recommend to use other mathematical libraries (such as SciPy and NumPy) since they are better for this purposes, moreover other potential uses such as random number generation, interpolation, etc. Please, see the section [Other libraries](#other-libraries) to known how to increase the funcionalities (as import results in MS Excel, ESG, C++ integration, etc...)
 
-Additionally, the package includes several life mortality tables (``mortalitytables.py``), mainly extracted from academic books [see link to books].
+Additionally, the package includes several life mortality tables (``mortalitytables.py``), mainly extracted from [academic textbooks](#books).
 
-You can find also an example for individual contracts, and a collective file in the following files:
+You can find also an example for individual contract (see examples folder), and a collective contract in the following files:
 
 `` tariff-example1.py ``
 
@@ -63,7 +65,7 @@ I highly recommend reading the [official introduction to python](http://www.pyth
 
 #<a name="quick-start"></a><h2>Quick Start</h2>
 
-The names of the formulas follow the International Actuarial Notation and are easily guessable, with a few exceptions regarding special characters: (mainly, ``ä`` are replaced by ``aa`` and ``A'x`` is replaced by ``AEx``).
+The names of the formulas follow the International Actuarial Notation and are easily guessable, with a few exceptions regarding special characters (for example, ``A'x`` is replaced by ``AEx``).
 
 The **reserved variables** (in addition of python languages) are the following:
 
@@ -72,7 +74,7 @@ The **reserved variables** (in addition of python languages) are the following:
 * ``x`` = The age of the insured.
 * ``n`` = The horizon (term of insurance) in years or payment duration
 * ``m`` = Number of fractional payments per period. If missing, m is set as 0.
-* ``t`` = The deferring period in years. 
+* ``d`` = The deferring period in years. 
 
 All the actuarial formulas must include a minimum of 2 variables: nt (mortality table) and x (age) 
 If necessary, additional variables should be included with the following order: 
@@ -87,22 +89,23 @@ Additionally, there are two **smart formulas**: annuity() and A(), where the num
 
 **Specifications**:
 This formula is available for increasing annuities (Arithmetically and Geometrically). Syntaxis: It must be include as ['a',c] or ['g',c'] respectively.
-* ``p`` = Moment of payment. Syntaxis: 0 = begining of each period, 1 = end of each period.
+* ``n`` = A integer number (term of insurance in years) or 'w' = whole-life. (Also, 99 years is defined to be whole-life).
+* ``p`` = Moment of payment. Syntaxis: 0 = begining of each period, 1 = end of each period,
 * ``'a'`` = Arithmetical 
 * ``'g'`` = Geometrical
-* ``c`` = The increase rate.
+* ``c`` = The increase rate. Syntasis: ['g',c] or ['a',c]. For example, ['g',0.03]
 * ``-d`` = The n-years deferring period as negative number. 
 
 **Example**:
 <pre>
-``annuity(nt,50,10,12,['a',0.02],-15)``
+``annuity(nt,50,10,12,['g',0.02],-15)``
 </pre>
 
 ![Picture](http://www.garpa.net/github/pyliferisk2.png)
 
 #<a name="examples"></a><h2>Examples</h2>
 <pre>
-from pyliferisk import qx,Ax,ax
+from pyliferisk import annuity
 
 nt=[INE2004,2]
 x = 50
@@ -186,12 +189,17 @@ Then, import this library in projects is automatic as usually:
 
 or, if only like to use specific functions:
 
-``from pyliferisk import qx,Ax,ax``
+``from pyliferisk import annuity``
 
 
 <h3>Desktop Software IDE </h3>
-Eclipse is an integrated development environment (IDE) recommended especially for python projects. 
-Aptana Studio 3 (based on Eclipse) was used to write and test this library. Both are open-source and multi-platform. Please check the respective tutorials for installation (http://www.eclipse.org and http://www.aptana.org).
+For beginners, I highly recommended **Sublime Text 2**: [http://www.sublimetext.com/](http://www.sublimetext.com/). Minimal and non-necessary settings. Ideal for testing. Sublime Text uses a custom UI toolkit, optimized for speed and beauty, and may be downloaded and evaluated for free.
+
+Eclipse is an integrated development environment (IDE) recommended especially for python projects with a lot of files. 
+Aptana Studio 3 (based on Eclipse) was used to write and test this library. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org).
+
+For professional use, Enthought Inc. develops the Canopy platform ([https://www.enthought.com/products/canopy/](https://www.enthought.com/products/canopy/)): a comprehensive Python analysis environment, with financial case studies: Risk calculation for financial analysis ([https://www.enthought.com/services/consulting/case-studies/VaR](https://www.enthought.com/services/consulting/case-studies/VaR)).
+
 
 #<a name="links"></a><h2>Links</h2>
 
@@ -199,3 +207,13 @@ Aptana Studio 3 (based on Eclipse) was used to write and test this library. Both
 * http://blog.wesmckinney.com/ (author's panda)
 * http://ipython.org/presentation.html
 * http://www.amazon.com/Financial-Modelling-Python-Finance-Series/dp/0470987847/
+
+#<a name="books"></a><h2>Books</h2>
+
+The author is checking the library with the examples from following textbook:
+- Actuarial Mathematics for Life Contingent Risks (David C. M. Dickson, Mary R. Hardy and Howard R. Waters) Cambridge University Press, 2009.
+- Actuarial Mathematics (2nd Edition), Bowers et al.  Society of Actuaries, 1997.
+- Matemática de los Seguros de Vida, (Gil Fana J.A., Heras Matínez A. and Vilar Zanón J.L.) Fundación Mapfre Estudios, 1999.
+
+It will be documented in the examples folder. Contributions are greatly appreciated. 
+
