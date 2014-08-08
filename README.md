@@ -101,7 +101,7 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 ``annuity(nt,50,10,12,['g',0.02],-15)``
 </pre>
 
-![Picture](http://www.garpa.net/github/pyliferisk2.png)
+![Picture](http://charlesvilleneuve.net/_pyliferisk2.png)
 
 #<a name="examples"></a><h2>Examples</h2>
 <pre>
