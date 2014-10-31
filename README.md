@@ -119,6 +119,8 @@ return annuity(nt,x,n,0,-d)
 
 Python is used by several well-known banks companies for asset valuations. The exact search on Google for "financial modelling in Python" shows more than 65.000 results.
 
+![Picture](http://garpa.net/github/financial_modelling_python.jpg)
+
 Python is perfect for risk analysis in big data, since is not limited by database size and is able to access libraries for working with any database is very easy(as DB2, Oracle, MSAccess, SQL..). Moreover, [additional libraries](#other-libraries) (such as SciPy and NumPy) can be included in order to increase the functionality, such as random number generation, interpolation, etc.
 
 This library may be used in tariff processes, in the design phase of new products such as profit testing or estimation of future benefits. Other uses include:
