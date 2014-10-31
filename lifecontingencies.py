@@ -376,35 +376,35 @@ def annuity(nt,x,n,p,m=1,*args):
         pass
 
     if not incr and not deff and not wh_l and not post:
-        return 'aaxn'
+        return aaxn(nt,x,n,m)
     elif not incr and not deff and not wh_l and post:
-        return 'axn'
+        return axn(nt,x,n,m)
     elif not incr and not deff and wh_l and not post:
-        return 'aax'
+        return aax(nt,x,m)
     elif not incr and not deff and wh_l and post:
-        return 'ax'
+        return ax(nt,x,m)
     elif not incr and deff and not wh_l and not post:
-        return 'taaxn'
+        return taaxn(nt,x,n,t,m)
     elif not incr and deff and not wh_l and post:
-        return 'taxn'
+        return taxn(nt,x,n,t,m)
     elif not incr and deff and wh_l and not post:
-        return 'taax'
+        return taax(nt,x,n,t,m)
     elif not incr and deff and wh_l and post:
-        return 'tax'
+        return tax(nt,x,t,m)
     elif incr and not deff and not wh_l and not post:
-        return 'Iaaxn'
+        return Iaaxn(nt,x,n,i)
     elif incr and not deff and not wh_l and post:
-        return 'Iaxn'
+        return Iaxn(nt,x,n,i)
     elif incr and not deff and wh_l and not post:
-        return 'Iaax'    
+        return Iaax(nt,x,i)    
     elif incr and not deff and wh_l and post:
-        return 'Iax'
+        return Iax(nt,x,i)
     elif incr and deff and not wh_l and not post:
-        return 'Itaaxn'
+        return Itaaxn(nt,x,n,t,i)
     elif incr and deff and not wh_l and post:
-        return 'Itaxn'
+        return Itaxn(nt,x,n,t,i)
     elif incr and deff and wh_l and not post:
-        return 'Itaax'    
+        return Itaax(nt,x,t,i)
     else:
         #elif incr and deff and wh_l and post:
-        return 'Itax'
+        return Itax(nt,x,t,i)
