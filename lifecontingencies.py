@@ -16,80 +16,95 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Mortality table class ----------------
+
+class MortalityTable:
+    def __init__(self, l_x=[], q_x=[], nt=None):
+        self.lx = l_x
+        self.qx = q_x        
+        if nt:
+            mt = nt[0]
+            init = mt[0]
+            perc = 100
+            if len(nt) == 3:
+                perc = nt[2]
+            self.qx = [0.0]*init
+            end_val = 0
+            for val in mt[1:]:
+                if end_val < 1000.0:
+                    end_val = val*perc/100
+                    self.qx.append(end_val)
+        if self.lx == []:
+            self.lx = [100000.0]
+            for val in self.qx:
+                self.lx.append(self.lx[-1]*(1-val/1000))
+        if self.lx[-1] != 0.0 : self.lx.append(0.0)
+        if self.qx == []:
+            self.qx = []
+            l_x = self.lx[0]
+            for l_x1 in self.lx[1:]:
+                self.qx.append((l_x-l_x1)*1000/l_x)
+                l_x = l_x1
 
 # Actuarial notation -------------------
-def qx(nt,x):
-    """ qx: Returns the probability that a life aged x dies before 1 year  
+def qx(mt,x):
+    """ qx: Returns the probability that a life aged x dies before 1 year
+            With the convention: the true probability is qx/1000
     Args:
+        mt: the mortality table
         x: the age as integer number.
-    Raises:
-        TypeError: if n is not a number.
-        ValueError: if n is negative.
     """
-    mt = nt[0]
-    init = mt[0]
-    perc = 100
-    n = nt[0].index(1000)
-    if len(nt) == 3:
-        perc = nt[2]     
-    if x < init:
-        return 0
-    elif x < n:
-        return mt[x-init+1] * perc/100
+    if x < len(mt.qx):
+        return mt.qx[x]
     else:
         return 0
 
-def lx(nt,x):
+def lx(mt,x):
     """ lx : Returns the number of survivors at begining of age x """    
-    if x==0:
-        i = 100000.0
+    if x < len(mt.lx):
+        return mt.lx[x]
     else:
-        i = lx(nt,x-1)*(1-qx(nt,x-1)/1000)
-    return i
+        return 0
 
-def w(nt):
+def w(mt):
     """ w : ultimate age (lw = 0) """
-    pass
+    return len(mt.lx)
 
-def dx(nt,x):
+def dx(mt,x):
     """ Returns the number of dying at begining of age x """   
-    return lx(nt,x)-lx(nt,x+1)
+    return lx(mt,x)-lx(mt,x+1)
 
-def px(nt,x):
+def px(mt,x):
     """ px : Returns the probability of surviving within 1 year """
-    return 1000 - qx(nt,x)
+    return 1000 - qx(mt,x)
 
-def tpx(nt,x,t):
+def tpx(mt,x,t):
     """ tqx : Returns the probability that x will survive within t years """
     """ npx : Returns n years survival probability at age x """
-    return lx(nt,x+t) / lx(nt,x)
+    return lx(mt,x+t) / lx(mt,x)
 
-def tqx(nt,x,t):
+def tqx(mt,x,t):
     """ nqx : Returns the probability to die within n years at age x """
-    return (lx(nt,x)-lx(nt,x+t))/lx(nt,x)
+    return (lx(mt,x)-lx(mt,x+t))/lx(mt,x)
 
-def tqxn(nt,x,n,t):
+def tqxn(mt,x,n,t):
     """ n/qx : Probability to die in n years being alive at age x.
     Probability that x survives n year, and then dies in th subsequent t years """
-    return tpx(nt,x,t) * qx(nt,x+n)
+    return tpx(mt,x,t) * qx(mt,x+n)
 
-def ex(nt,x):
-    """ ex : Returns the curtate expectation of life. Life expectancy """ 
-    n = nt[0].index(1000)
+def ex(mt,x):
+    """ ex : Returns the curtate expectation of life. Life expectancy """
     sum1 = 0
-    for j in range(x+1,n):
-        k = lx(nt,j)
-        sum1 += k
+    for j in mt.lx[x+1:]:
+        sum1 += j
     try:
-        sum1/lx(nt,x)+0.5
+        return sum1/lx(mt,x)+0.5
     except:
         return 0
-    else:
-        return sum1/lx(nt,x)+0.5
 
-def mx(nt,x):
+def mx(mt,x):
     """ mx : Returns the central mortality rate """
-    return dx(nt,x) / lx(nt,x)
+    return dx(mt,x) / lx(mt,x)
 
 # Commutations ------------------
 
@@ -356,7 +371,7 @@ def annuity(nt,x,n,p,m=1,*args):
     elif p == 0:
         pass
     else:
-        print 'Error: payment value is 0 or 1'
+        print('Error: payment value is 0 or 1')
 
     if args:
         if 'a' in args[0][0]:
