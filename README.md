@@ -184,7 +184,11 @@ The Python implementation is under an open source license that makes it freely u
 
 <h3>pyliferisk library installation</h3>
 
-Once pyhon is running, just install this library with ``pip install pyliferisk`` or download the source code at github.
+Once pyhon is running, just install this library with ``git clone`` or download the source code at github.
+
+```sh
+git clone https://github.com/franciscogarate/pyliferisk.git
+```
 
 Then, import this library in projects is automatic as usually:
 
