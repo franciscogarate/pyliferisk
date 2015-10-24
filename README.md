@@ -1,9 +1,9 @@
 <h1>pyliferisk</h1>
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2014-07-01<br/>
-Version: 1.2<br/>
-Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
+Date: 2015-10-24<br/>
+Version: 1.3 beta<br/>
+Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com, Florian Pons<br/>
 Site: github.com/franciscogarate/pyliferisk<br/>
 
 ![Picture](http://www.garpa.net/github/pyliferisk.png)
@@ -48,9 +48,7 @@ While pyliferisk library version 1.1 incorporated some useful basic functions to
 
 Additionally, the package includes several life mortality tables (``mortalitytables.py``), mainly extracted from [academic textbooks](#books).
 
-You can find also an example for individual contract (see examples folder), and a collective contract in the following files:
-
-`` tariff-example1.py ``
+You can find also examples for different contracts in the /examples/ folder. To run perfectly, please copy the example file in the same directory where you have the library.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
@@ -69,14 +67,39 @@ The names of the formulas follow the International Actuarial Notation and are ea
 
 The **reserved variables** (in addition of python languages) are the following:
 
-* ``i`` = interest rate. The effective rate of interest, namely, the total interest earned in a year.
-* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=[GKM95,2] (Note: GKM95 colum must be in mortalitytables.py)
+For the mortality table:
+* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=GKM95 (Note: GKM95 must be in mortalitytables.py)
+* ``i`` = interest rate. The effective rate of interest, namely, the total interest earned in a year. Syntax: i=0.02
+* ``perc`` = Optional variable to indicate the percentage of mortality to be applied. Syntax: perc=85
+Variable ``perc`` can be omitted, in this case it will be 100 by default.
+
+For actuarial formulas:
 * ``x`` = The age of the insured.
 * ``n`` = The horizon (term of insurance) in years or payment duration
 * ``m`` = Number of fractional payments per period. If missing, m is set as 0.
-* ``d`` = The deferring period in years. 
+* ``d`` = The deferring period in years.
 
-All the actuarial formulas must include a minimum of 2 variables: nt (mortality table) and x (age) 
+The mortality table must be defined with the class ``MortalityTable()``. Example:
+<pre>
+from lifecontingencies import *
+
+tariff=MortalityTable(nt=SPAININE2004,i=0.02)
+experience=MortalityTable(nt=SPAININE2004,i=0.02,perc=85)
+
+# Print the omega (limiting age) of the both mortality tables:
+print tariff.w
+print experience.w
+
+# Print the qx at 50 years old:
+print tariff.qx[50]
+print experience.qx[50]
+<\pre>
+
+
+
+Also, 
+
+All the actuarial formulas must include a minimum of 2 variables: mt (mortality table) and x (age) 
 If necessary, additional variables should be included with the following order: 
 ``n`` (horizon in years),  ``m`` (m-monthly payments), ``t`` (n-years deferred period).
 
@@ -90,7 +113,7 @@ Additionally, there are two **smart formulas**: annuity() and A(), where the num
 **Specifications**:
 This formula is available for increasing annuities (Arithmetically and Geometrically). Syntaxis: It must be include as ['a',c] or ['g',c'] respectively.
 * ``n`` = A integer number (term of insurance in years) or 'w' = whole-life. (Also, 99 years is defined to be whole-life).
-* ``p`` = Moment of payment. Syntaxis: 0 = begining of each period, 1 = end of each period,
+* ``p`` = Moment of payment. Syntaxis: 0 = begining of each period (prepaid), 1 = end of each period (postpaid),
 * ``'a'`` = Arithmetical 
 * ``'g'`` = Geometrical
 * ``c`` = The increase rate. Syntax: ['g',c] or ['a',c]. For example, ['g',0.03]
@@ -98,7 +121,8 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 
 **Example**:
 <pre>
-annuity(nt,50,10,12,['g',0.02],-15)
+mt=MortalityTable(nt=SPAININE2004,i=0.02)
+annuity(mt,50,10,12,['g',0.03],-15)
 </pre>
 
 ![Picture](http://garpa.net/github/pyliferisk2.png)
@@ -107,12 +131,12 @@ annuity(nt,50,10,12,['g',0.02],-15)
 <pre>
 from pyliferisk import annuity
 
-nt=[INE2004,2]
+mt=MortalityTable(nt=SPAININE2004,i=0.02)
 x = 60 # age
 n = 15 # term
 d = 5  # 5 years deferred
 
-return annuity(nt,x,n,0,-d)
+return annuity(mt,x,n,0,-d)
 </pre>
 
 #<a name="potential-uses"></a><h2>Potential uses</h2>
