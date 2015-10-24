@@ -93,7 +93,7 @@ print experience.w
 # Print the qx at 50 years old:
 print tariff.qx[50]
 print experience.qx[50]
-<\pre>
+</pre>
 
 
 
