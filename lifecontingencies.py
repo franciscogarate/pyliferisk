@@ -15,6 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from mortalitytables import *
 
 # Mortality table class ----------------
 
@@ -43,6 +44,8 @@ class MortalityTable:
                 if end_val < 1000.0:
                     end_val = val*perc/100
                     self.qx.append(end_val)
+            if perc != 100:
+                self.qx.append(1000)
         if self.lx == []:
             self.lx = [100000.0]
             for val in self.qx:
