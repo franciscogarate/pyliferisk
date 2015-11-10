@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #    pyrisk: A python library for simple actuarial calculations
 #    Version: 1.3 - October 2015
-#    Copyright (C) 2014 Francisco Garate
+#    Copyright (C) 2015 Francisco Garate
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -399,34 +399,45 @@ def annuity(mt,x,n,p,m=1,*args):
     else:
         pass
 
-    if isinstance(m,int) and m >=0 and l == 0:
+    if isinstance(m,int) and m >=0 and l == 0: 
         pass
-
-    elif l == 0 and isinstance(m,list):
-        args = m
+    elif l == 0 and isinstance(m,list):  
+        args = (m,)
         m = 1
-    elif l == 0 and int(m) < 0:
+        incr = True
+    elif l == 0 and int(m) < 0:         
         args = False
-        deff = m
+        deff = True
+        t = int(m)*-1
         m = 1
     elif l == 1:
         if isinstance(args[0],list):
             incr = True
         elif isinstance(args[0],int):
-            deff = args[0]
-            args = False
+            if isinstance(m,list):
+                deff = True
+                incr = True
+                t = int(args[0])*-1
+                args = (m,)
+                m = 1
+            else:
+                deff = True
+                t = int(args[0])*-1
+                args = False
         else:
             pass
-    elif l == 2:
+    elif l == 2:        
         if isinstance(args[0],list):
-            deff = args[1]
+            deff = True
+            t = int(args[1])*-1
             incr = True
         elif isinstance(args[0],int):
-            deff = int(args[0])
+            deff = True
+            t = int(args[0])*-1
             args = args[1]
         else:
             pass
-    else:
+    else:        
         pass
     
     if p == 1:
@@ -462,23 +473,23 @@ def annuity(mt,x,n,p,m=1,*args):
     elif not incr and deff and not wh_l and post:
         return taxn(mt,x,n,t,m)
     elif not incr and deff and wh_l and not post:
-        return taax(mt,x,n,t,m)
+        return taax(mt,x,t,m)
     elif not incr and deff and wh_l and post:
         return tax(mt,x,t,m)
     elif incr and not deff and not wh_l and not post:
-        return qaaxn(mt,x,n,q)
+        return qaaxn(mt,x,n,q,m)
     elif incr and not deff and not wh_l and post:
-        return qaxn(mt,x,n,q)
+        return qaxn(mt,x,n,q,m)
     elif incr and not deff and wh_l and not post:
-        return qaax(mt,x,q)    
+        return qaax(mt,x,q,m)    
     elif incr and not deff and wh_l and post:
-        return qax(mt,x,q)
+        return qax(mt,x,q,m)
     elif incr and deff and not wh_l and not post:
-        return qtaaxn(mt,x,n,t,q)
+        return qtaaxn(mt,x,n,t,q,m)
     elif incr and deff and not wh_l and post:
-        return qtaxn(mt,x,n,t,q)
+        return qtaxn(mt,x,n,t,q,m)
     elif incr and deff and wh_l and not post:
-        return qtaax(mt,x,t,q)
+        return qtaax(mt,x,t,q,m)
     else:
         #elif incr and deff and wh_l and post:
-        return Itax(mt,x,t,i)
+        return Itax(mt,x,t)
