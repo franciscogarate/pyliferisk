@@ -96,6 +96,25 @@ class MortalityTable:
             for m in range(0,len(self.Cx)):
                 self.Mx.append(sum(self.Cx[m:-1])) # [m:-2] according notes from ucm.es, [m:-1]
 
+# Pers class represent on personne of the model
+
+class Pers:
+    def __init__(self, table, bd):
+        self.table = table
+        self.bd = bd # birth date in year
+
+# Actuarial class calculate actuarial notations
+
+class Actuarial:
+    def  __init__(self, rate):
+        if type(rate) is float:
+            self.rate = lambda x : rate
+        else:
+            self.rate = rate
+    
+    def Ax(self):
+        pass
+        
 # Actuarial notation -------------------
 def qx(mt,x):
     """ qx: Returns the probability that a life aged x dies before 1 year
