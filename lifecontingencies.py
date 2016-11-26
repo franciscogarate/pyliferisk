@@ -19,6 +19,8 @@ from mortalitytables import *
 
 # Mortality table class ----------------
 
+# This class represente one mortality table
+# with basic actuarial values calculated (for optimisations)
 class MortalityTable:
     def __init__(self, l_x=[], q_x=[], nt=None,i=None,perc=100):
         self.lx = l_x
@@ -35,6 +37,7 @@ class MortalityTable:
         self.Cx = []
         self.Mx = []
         self.nEx = []
+        # for retrocompatibility
         if nt:
             mt = nt
             init = mt[0]
@@ -46,12 +49,14 @@ class MortalityTable:
                     self.qx.append(end_val)
             if perc != 100:
                 self.qx.append(1000)
+        # if lx is empty, assume qx is known
         if self.lx == []:
             self.lx = [100000.0]
             for val in self.qx:
                 self.lx.append(self.lx[-1]*(1-val/1000))
         if self.lx[-1] != 0.0 : self.lx.append(0.0)
         if self.w == 0 : self.w = self.lx.index(0)-1
+        # if qx is empty, assume lx is known
         if self.qx == []:
             #self.qx = []
             l_x = self.lx[0]
