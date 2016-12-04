@@ -28,6 +28,7 @@ class MortalityTable:
         self.e_x = []      
         self.perc = perc
         self.nt = nt
+        self.w = 0
         
         # for retrocompatibility
         if nt:
@@ -50,19 +51,40 @@ class MortalityTable:
                 self.l_x.append(self.l_x[-1]*(1-val/1000))
         if self.l_x[-1] != 0.0 : self.l_x.append(0.0)
         if self.w == 0 : self.w = self.l_x.index(0)-1
-        # if qx is empty, assume l_x is known
-        if self.q_x == []:
-            #self.q_x = []
-            l_x = self.l_x[0]
-            for l_x1 in self.l_x[1:]:
-                self.q_x.append((l_x-l_x1)*1000/l_x)
-                l_x = l_x1
-        if self.e_x == []:
-            sum_lx = sum(self.l_x[0:-1])
-            for g in range(0,len(self.l_x)-1):
-                lx_g = self.l_x[g]
-                sum_lx = sum_lx-lx_g
-                self.e_x.append(0.5+sum_lx/lx_g) #[g+1:-2] according notes from ucm.es, [g+1:-1]
+
+class Pers:
+    """represent a group of persone who disappear on first death, can be one persone only
+    MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)"""
+    def __init(self, MortalityTable_list):
+        self.l_x = []
+        self.q_x = []
+        self.e_x = []
+        self.w = 0
+        
+        if type(MortalityTable_list) != list:
+            MortalityTable_list = [MortalityTable_list]
+        
+        # Actuarial notation -------------------
+        if self.w == 0:
+            self.w = min([t.w for t in MortalityTable_list])
+        # calculate l_x
+        for i in range(0,self.w):
+            self.l_x[i] = 1
+            for mt in MortalityTable_list:
+                self.l_x[i] *= mt.l_x[i]
+        
+        # calculate q_x
+        l_x = self.l_x[0]
+        for l_x1 in self.l_x[1:]:
+            self.q_x.append((l_x-l_x1)*1000/l_x)
+            l_x = l_x1
+        
+        # calculate e_x
+        sum_lx = sum(self.l_x[0:-1])
+        for g in range(0,len(self.l_x)-1):
+            lx_g = self.l_x[g]
+            sum_lx = sum_lx-lx_g
+            self.e_x.append(0.5+sum_lx/lx_g) #[g+1:-2] according notes from ucm.es, [g+1:-1]
         
     # Actuarial notation -------------------
     def qx(self,x):
@@ -125,8 +147,7 @@ class MortalityTable:
         """ mx : Returns the central mortality rate """
         return self.dx(x) / self.l_x[x]
 
-
-# Actuarial class calculate actuarial notations
+# Actuarial class: calculate actuarial notations
 
 class Actuarial:
     #rate: actuarial rate
