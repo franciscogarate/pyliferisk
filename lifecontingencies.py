@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #    pyrisk: A python library for simple actuarial calculations
-#    Version: 1.3 - October 2015
-#    Copyright (C) 2015 Francisco Garate
+#    Version: 2.0 - December 2016
+#    Copyright (C) 2016 Francisco Garate, Florian Pons
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -54,8 +54,9 @@ class MortalityTable:
 
 class Pers:
     """represent a group of persone who disappear on first death, can be one persone only
-    MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)"""
-    def __init(self, MortalityTable_list):
+    MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)
+    age_list: used to calculate relative offset of tables, relevante only if more than one persone"""
+    def __init__(self, MortalityTable_list, age_list=[0]):
         self.l_x = []
         self.q_x = []
         self.e_x = []
@@ -63,15 +64,26 @@ class Pers:
         
         if type(MortalityTable_list) != list:
             MortalityTable_list = [MortalityTable_list]
+        #calculate offsets
+        age_min = min(age_list)
+        offsets = [x-age_min for x in age_list]
         
         # Actuarial notation -------------------
-        if self.w == 0:
-            self.w = min([t.w for t in MortalityTable_list])
+        for i in range(len(MortalityTable_list)):
+            mt = MortalityTable_list[i]
+            os = offsets[i]
+            if self.w == 0:
+                self.w = mt.w-os
+            else:
+                self.w = min(self.w, mt.w-os)
+        
         # calculate l_x
-        for i in range(0,self.w):
-            self.l_x[i] = 1
-            for mt in MortalityTable_list:
-                self.l_x[i] *= mt.l_x[i]
+        self.l_x = MortalityTable_list[0].l_x[offsets[0]:]
+        for t in range(1,len(MortalityTable_list)):
+            mt = MortalityTable_list[t]
+            os = offsets[t]
+            for i in range(0,self.w):
+                self.l_x[i] *= mt.l_x[i+os]
         
         # calculate q_x
         l_x = self.l_x[0]
@@ -163,11 +175,11 @@ class Actuarial:
         
         #Dx calculation
         self.D_x = []
-        age = -1
+        age = 0
         for j in pers.l_x:
-            age +=1
             i = self.rate(age)
             self.D_x.append(((1/(1+i))**age)*j)
+            age +=1
         
         #Nx calculation
         self.N_x = []
@@ -181,8 +193,8 @@ class Actuarial:
         for lx1 in pers.l_x:   #[:-1]
             age +=1
             i = self.rate(age)
-            C_x = ((1/(1+i))**(age+1))*(lx0-lx1)*((1+i)**0.5)
-            self.Cx.append(C_x)
+            Cx = ((1/(1+i))**(age+1))*(lx0-lx1)*((1+i)**0.5)
+            self.C_x.append(Cx)
             lx0 = lx1
         
         #Mx calculation
@@ -294,7 +306,7 @@ class Actuarial:
     
     def ax(self,x,m=1):
         """ ax : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life annuity-late). Payable 'm' per year at the ends of the period """
-        return (self.N_x[x]/self.D_x[x]-1) + (float(m-1)/float(m*2))
+        return (self.N_x[x+1]/self.D_x[x]) + (float(m-1)/float(m*2))
     
     def taaxn(self,x,n,m=1):
         pass
