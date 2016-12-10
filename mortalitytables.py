@@ -61,6 +61,7 @@ def get_TGHF05(gender):
                 else:
                     val = 100000.0
                 res[col_names[col_index]].append(val)
+                col_index += 1
     for col in col_names:
         res[col] = MortalityTable(l_x = res[col])
     return res
