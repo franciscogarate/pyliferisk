@@ -9,3 +9,4 @@ setup(
   url = 'https://github.com/franciscogarate/pyliferisk', # use the URL to the github repo
   keywords = ['pyliferisk', 'life contingencies', 'actuarial'], # arbitrary keywords
   classifiers = [],
+)
