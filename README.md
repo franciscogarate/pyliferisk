@@ -87,12 +87,12 @@ tariff=lc.MortalityTable(nt=SPAININE2004,i=0.02)
 experience=lc.MortalityTable(nt=SPAININE2004,i=0.02,perc=85)
 
 # Print the omega (limiting age) of the both mortality tables:
-print tariff.w
-print experience.w
+print(tariff.w)
+print(experience.w)
 
 # Print the qx at 50 years old:
-print tariff.qx[50]
-print experience.qx[50]
+print(tariff.qx[50])
+print(experience.qx[50])
 ```
 
 Example 2:
