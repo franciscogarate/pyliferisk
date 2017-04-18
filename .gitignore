@@ -34,3 +34,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# IntelliJ Idea
+.idea
+
+# Emacs dust
+*~
+*#
