@@ -56,7 +56,6 @@ class LifeTable:
 class Pers:
     """represent a group of persone who disappear on first death, can be one persone only
     MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)"""
-
     def __init__(self, MortalityTable_list):
         self.q_x = []
         self.e_x = []
