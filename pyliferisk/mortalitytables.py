@@ -275,3 +275,36 @@ HKF2014 = (
 4.88043, 5.30306, 5.77563, 6.32186, 6.9708, 7.72595, 8.60526, 9.64107, 10.87802, 12.36308, 14.13851, 16.23757, 18.68347,
 21.49513, 24.68039, 28.24604, 32.19102, 36.51121, 41.20158, 46.2567, 51.8699, 58.09296, 64.98083, 72.59154, 80.986,
 90.22778, 100.38273, 111.51856, 123.70423, 137.00932, 151.50313, 167.25381, 184.32719, 202.78561, 222.68656, 1000.0)
+
+
+import csv
+from lifecontingencies import *
+import os
+script_dir = os.path.dirname(__file__)
+
+def get_TGHF05(gender):
+    """
+    gender: H for male and F for female
+    generation: ex 1952
+    """
+    FR_TGHF05 = csv.reader(open(os.path.join(script_dir, 'tables/FR_TG' + gender + '05.csv'),'r'))
+    res = None
+    col_names = []
+    for row in FR_TGHF05:
+        if res==None:
+            res = {}
+            for col in row[1:]:
+                res[col] = []
+                col_names.append(col)
+        else:
+            col_index = 0
+            for col in row[1:]:
+                if len(col)>0:
+                    val = float(col)
+                else:
+                    val = 100000.0
+                res[col_names[col_index]].append(val)
+                col_index += 1
+    for col in col_names:
+        res[col] = MortalityTable(l_x = res[col])
+    return res
