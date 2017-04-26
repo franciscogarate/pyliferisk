@@ -1,17 +1,15 @@
-<h1>pyliferisk</h1>
+<h1>pyliferisk</h1>|PyPI version| |license|
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2015-10-24<br/>
-Version: 1.3 beta<br/>
+Date: 2017-03-07<br/>
+Version: 1.8<br/>
 Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com, Florian Pons<br/>
 Site: github.com/franciscogarate/pyliferisk<br/>
 
 ![Picture](http://www.garpa.net/github/pyliferisk.png)
 
 <!--
-http://en.wikipedia.org/wiki/Markdown
-http://tmpvar.com/markdown.html
-http://docs.readthedocs.org/en/latest/getting_started.html#write-your-docs
+https://help.github.com/categories/writing-on-github/
 -->
 
 <hr>
@@ -68,7 +66,7 @@ The names of the formulas follow the International Actuarial Notation and are ea
 The **reserved variables** (in addition of python languages) are the following:
 
 For the mortality table:
-* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=GKM95 (Note: GKM95 must be in mortalitytables.py)
+* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=GKM95 (Note: GKM95 must be included in mortalitytables.py)
 * ``i`` = interest rate. The effective rate of interest, namely, the total interest earned in a year. Syntax: i=0.02
 * ``perc`` = Optional variable to indicate the percentage of mortality to be applied. Syntax: perc=85
 Variable ``perc`` can be omitted, in this case it will be 100 by default.
@@ -80,22 +78,41 @@ For actuarial formulas:
 * ``d`` = The deferring period in years.
 
 The mortality table must be defined with the class ``MortalityTable()``. Example:
-<pre>
-from lifecontingencies import *
 
-tariff=MortalityTable(nt=SPAININE2004,i=0.02)
-experience=MortalityTable(nt=SPAININE2004,i=0.02,perc=85)
+```python
+import pyliferisk.lifecontingencies as lc
+from pyliferisk.mortalitytables import SPAININE2004
+
+tariff=lc.MortalityTable(nt=SPAININE2004,i=0.02)
+experience=lc.MortalityTable(nt=SPAININE2004,i=0.02,perc=85)
 
 # Print the omega (limiting age) of the both mortality tables:
-print tariff.w
-print experience.w
+print(tariff.w)
+print(experience.w)
 
 # Print the qx at 50 years old:
-print tariff.qx[50]
-print experience.qx[50]
-</pre>
+print(tariff.qx[50])
+print(experience.qx[50])
+```
 
+Example 2:
 
+```python
+import matplotlib.pyplot as plt
+import pyliferisk.lifecontingencies as lc
+from pyliferisk.mortalitytables import SPAININE2004, GKM95
+import numpy as np
+tarifa=lc.MortalityTable(nt=SPAININE2004,i=0.02)
+experiencia=lc.MortalityTable(nt=GKM95,i=0.02,perc=75)
+x = np.arange(tarifa.w)
+y = tarifa.lx[:tarifa.w]
+z = experiencia.lx[:tarifa.w]
+plt.plot(x,y, color = 'blue')
+plt.plot(x,z, color = 'red')
+plt.ylabel('lx')
+plt.xlabel('edad')
+```
+![Picture](http://garpa.net/github/pyliferisk3.png)
 
 Also, 
 
@@ -120,24 +137,22 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 * ``-d`` = The n-years deferring period as negative number. 
 
 **Example**:
-<pre>
+```python
 mt=MortalityTable(nt=SPAININE2004,i=0.02)
 annuity(mt,50,10,12,['g',0.03],-15)
-</pre>
+```
 
 ![Picture](http://garpa.net/github/pyliferisk2.png)
 
 #<a name="examples"></a><h2>Examples</h2>
-<pre>
-from pyliferisk import annuity
-
-mt=MortalityTable(nt=SPAININE2004,i=0.02)
+```python
+mt=lc.MortalityTable(nt=SPAININE2004,i=0.02)
 x = 60 # age
 n = 15 # term
 d = 5  # 5 years deferred
 
-return annuity(mt,x,n,0,-d)
-</pre>
+return lc.annuity(mt,x,n,0,-d)
+```
 
 #<a name="potential-uses"></a><h2>Potential uses</h2>
 
@@ -145,7 +160,7 @@ Python is used by several well-known banks companies for asset valuations. The e
 
 ![Picture](http://garpa.net/github/financial_modelling_python.jpg)
 
-Python is perfect for risk analysis in big data, since is not limited by database size and is able to access libraries for working with any database is very easy(as DB2, Oracle, MSAccess, SQL..). Moreover, [additional libraries](#other-libraries) (such as SciPy and NumPy) can be included in order to increase the functionality, such as random number generation, interpolation, etc.
+Python is perfect for risk analysis in big data, since is not limited by database size and is able to access libraries for working with any database is very easy(as DB2, Oracle, MSAccess, SQL..). Moreover, [additional libraries](#other-libraries) (such as SciPy and NumPy) can be included in order to increase the functionality, such as cash flow operations, random number generation, interpolation, etc.
 
 This library may be used in tariff processes, in the design phase of new products such as profit testing or estimation of future benefits. Other uses include:
 - Auditing purposes tool
@@ -157,7 +172,7 @@ If you find something that Python cannot do, or if you need the performance adva
 
 **Solvency II and Actuarial Industrialization**: For European actuaries, Solvency II opens a big opportunity. The new requirements transform into agility, transversality and auditability. The internal model is not only software, it should be an internal process used extensively where all parts must walk hand in hand.
 
-In fact, you can find how Python have been easily used by several advisors in order to implement QIS5 requirements.
+In fact, you can find how Python have been easily used by several advisors in order to implement QRTs requirements.
 
 Take a look at application domains where Python is used: http://www.python.org/about/apps/
 
@@ -165,37 +180,29 @@ Take a look at application domains where Python is used: http://www.python.org/a
 
 Maths or Statistics libraries:
 
-[http://www.scipy.org/](http://www.scipy.org/)
+* [https://www.scipy.org/](https://www.scipy.org/)
 : Scientific Tools for Python
 
-[http://www.numpy.org/](http://www.numpy.org/)
+* [http://www.numpy.org/](http://www.numpy.org/)
 : NumPy is the fundamental package for scientific computing with Python.
 
-[http://matplotlib.sourceforge.net/](http://matplotlib.sourceforge.net/)
+* [http://pandas.pydata.org/](http://pandas.pydata.org/)
+: Python Data Analysis Library.
+
+* [http://matplotlib.org](http://matplotlib.org)
 : Data visualization and graphics tools. Matplotlib is a python 2D plotting library which produces publication quality figures
 
-[http://code.google.com/p/pymc/](http://code.google.com/p/pymc/)
-: Bayesian Stochastic Modelling in Python, particularly using Markov chain Monte Carlo (MCMC), is an increasingly relevant approach to statistical estimation.
-
-[http://statsmodels.sourceforge.net/](http://statsmodels.sourceforge.net/)
+* [http://www.statsmodels.org/stable/](http://www.statsmodels.org/stable/)
 : Statistics in Python. scikits.statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models
 
-[http://pandas.pydata.org/](http://pandas.pydata.org/)
-: Python Data Analysis Library (http://pandas.sourceforge.net/)
-
-[http://ipython.org/](http://ipython.org/)
+* [http://ipython.org/](http://ipython.org/)
 : Productive Interactive Computing
 
-[http://cython.org/](http://cython.org/)
+* [http://cython.org/](http://cython.org/)
 : Cython is a language that makes writing C extensions for the Python language as easy as Python itself.
 
-[http://scikits.appspot.com/](http://scikits.appspot.com/)
-: SciKits, short for SciPy Toolkits, toolkits that complement SciPy.
-
-**Others:**
-http://www.reportlab.com/software/opensource/: The ReportLab Toolkit is open-source engine for creating PDF (Fast-flexible PDF generation)
-http://rpy.sourceforge.net/: A simple and efficient access to R from Python
-http://pypi.python.org/pypi: PyPI The Python Package Index, is the official repository of software for the Python programming language.
+* [https://github.com/greedo/python-xbrl](https://github.com/greedo/python-xbrl)
+: python-xbrl is a library for parsing xbrl documents (EIOPA, ECB, SEC..)
 
 #<a name="installation"></a><h2>Installation</h2>
 
@@ -208,10 +215,10 @@ The Python implementation is under an open source license that makes it freely u
 
 <h3>pyliferisk library installation</h3>
 
-Once pyhon is running, just install this library with ``git clone`` or download the source code at github.
+Once pyhon is running, just install this library with ``pip install pyliferisk`` or download the source code at github (git clone).
 
 ```sh
-git clone https://github.com/franciscogarate/pyliferisk.git
+pip install pyliferisk
 ```
 
 Then, import this library in projects is automatic as usually:
@@ -224,12 +231,13 @@ or, if only like to use specific functions:
 
 
 <h3>Desktop Software IDE </h3>
-For beginners, I highly recommended **Sublime Text 2**: [http://www.sublimetext.com/](http://www.sublimetext.com/). Minimal and non-necessary settings. Ideal for testing. Sublime Text uses a custom UI toolkit, optimized for speed and beauty, and may be downloaded and evaluated for free.
 
-Eclipse is an integrated development environment (IDE) recommended especially for python projects with a lot of files. 
-**Aptana Studio 3** (based on Eclipse) was used to write and test this library. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org)).
+I highly recommended **Rodeo** [http://rodeo.yhat.com/](http://rodeo.yhat.com/) for desktop or
+**Sublime Text 2**: [http://www.sublimetext.com/](http://www.sublimetext.com/). Minimal and non-necessary settings. Ideal for testing. Sublime Text uses a custom UI toolkit, optimized for speed and beauty, and may be downloaded and evaluated for free.
 
-For professional use, Enthought Inc. develops the Canopy platform ([https://www.enthought.com/products/canopy/](https://www.enthought.com/products/canopy/)): a comprehensive Python analysis environment, with financial case studies: Risk calculation for financial analysis ([https://www.enthought.com/services/consulting/case-studies/VaR](https://www.enthought.com/services/consulting/case-studies/VaR)).
+Eclipse (or Aptana Studio 3 -based on Eclipse-)is an integrated development environment (IDE) recommended especially for python projects with a lot of files. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org)).
+
+For professional use, Rodeo or Canopy platform ([https://www.enthought.com/products/canopy/](https://www.enthought.com/products/canopy/)): a comprehensive Python analysis environment, with financial case studies: Risk calculation for financial analysis ([https://www.enthought.com/services/consulting/case-studies/VaR](https://www.enthought.com/services/consulting/case-studies/VaR)).
 
 Note: Apart of these programs, Python must be installed in the computer.
 
