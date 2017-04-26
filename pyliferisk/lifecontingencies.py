@@ -21,7 +21,7 @@
 
 # This class represente one mortality table
 # with basic actuarial values calculated (for optimisations)
-class LifeTable:
+class MortalityTable:
     def __init__(self, l_x=[], q_x=[], nt=None, perc=100):
         self.l_x = l_x
         self.q_x = q_x
@@ -55,111 +55,61 @@ class LifeTable:
 
 class Pers:
     """represent a group of persone who disappear on first death, can be one persone only
-    MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)"""
-    def __init__(self, MortalityTable_list):
+    MortalityTable_list: list of MortalityTable. On MortalityTable for one persone (can be only MortalityTable object if one persone)
+    age_list: used to calculate relative offset of tables, relevante only if more than one persone"""
+    def __init__(self, MortalityTable_list, age_list=[0]):
+        self.l_x = []
         self.q_x = []
         self.e_x = []
         self.w = 0
 
         if type(MortalityTable_list) != list:
             MortalityTable_list = [MortalityTable_list]
+        #calculate offsets
+        age_min = min(age_list)
+        offsets = [x-age_min for x in age_list]
 
         # Actuarial notation -------------------
-        if self.w == 0:
-            self.w = min([t.w for t in MortalityTable_list])
+        for i in range(len(MortalityTable_list)):
+            mt = MortalityTable_list[i]
+            os = offsets[i]
+            if self.w == 0:
+                self.w = mt.w-os
+            else:
+                self.w = min(self.w, mt.w-os)
+        
         # calculate l_x
-
-        self.l_x = [0] * self.w
+        self.l_x = MortalityTable_list[0].l_x[offsets[0]:]
+        for t in range(1,len(MortalityTable_list)):
+            mt = MortalityTable_list[t]
+            os = offsets[t]
         for i in range(0, self.w):
-            self.l_x[i] = 1
-            for mt in MortalityTable_list:
-                self.l_x[i] *= mt.lx[i]
+            if i<len(self.l_x):
+                self.l_x.append(0)
+            if i+os<len(mt.l_x):
+                self.l_x[i] *= mt.l_x[i+os]
+            else:
+                self.l_x[i] = 0
 
         # calculate q_x
-        l_x = self.l_x[0]
-        for l_x1 in self.l_x[1:]:
-            self.q_x.append((l_x - l_x1) * 1000 / l_x)
-            l_x = l_x1
+        if len(self.l_x)>0:
+            lx = self.l_x[0]
+        for lx1 in self.l_x[1:]:
+            if lx>0:
+                self.q_x.append((lx - lx1) * 1000 / lx)
+            else:
+                self.q_x.append(1)
+            lx = lx1
 
         # calculate e_x
         sum_lx = sum(self.l_x[0:-1])
         for g in range(0, len(self.l_x) - 1):
             lx_g = self.l_x[g]
             sum_lx = sum_lx - lx_g
-            self.e_x.append(0.5 + sum_lx / lx_g)  # [g+1:-2] according notes from ucm.es, [g+1:-1]
-
-
-class MortalityTable:
-    def __init__(self, l_x=[], q_x=[], nt=None, i=None, perc=100):
-        self.lx = l_x
-        self.qx = q_x
-        self.dx = []
-        self.ex = []
-        self.w = 0
-        self.i = i
-        self.q = 0
-        self.perc = perc
-        self.nt = nt
-        self.Dx = []
-        self.Nx = []
-        self.Cx = []
-        self.Mx = []
-        self.nEx = []
-        if nt:
-            mt = nt
-            init = mt[0]
-            self.qx = [0.0] * init
-            end_val = 0
-            for val in mt[1:]:
-                if end_val < 1000.0:
-                    end_val = val * perc / 100
-                    self.qx.append(end_val)
-            if perc != 100:
-                self.qx.append(1000)
-        if self.lx == []:
-            self.lx = [100000.0]
-            for val in self.qx:
-                self.lx.append(self.lx[-1] * (1 - val / 1000))
-        if self.lx[-1] != 0.0: self.lx.append(0.0)
-        if self.w == 0: self.w = self.lx.index(0) - 1
-        if self.qx == []:
-            # self.qx = []
-            l_x = self.lx[0]
-            for l_x1 in self.lx[1:]:
-                self.qx.append((l_x - l_x1) * 1000 / l_x)
-                l_x = l_x1
-        if self.dx == []:
-            dx_0 = -1
-            end_x_lx = self.lx.index(0)
-            for lx0 in self.lx:
-                dx_0 += 1
-                lx1 = min(dx_0 + 1, end_x_lx)
-                self.dx.append(lx0 - self.lx[lx1])
-        if self.ex == []:
-            for g in range(0, len(self.lx[:-1])):
-                lx_g = self.lx[g]
-                self.ex.append(0.5 + sum(self.lx[g + 1:-1]) / lx_g)  # [g+1:-2] according notes from ucm.es, [g+1:-1]
-        if self.Dx == []:
-            # self.Dx = []
-            age = -1
-            for j in self.lx:
-                age += 1
-                self.Dx.append(((1 / (1 + i)) ** age) * j)
-        if self.Nx == []:
-            # self.Nx = []
-            for k in range(0, len(self.Dx)):
-                self.Nx.append(sum(self.Dx[k:-1]))  # [k:-2] according notes from ucm.es, [k:-1]
-        if self.Cx == []:
-            # self.Cx = []
-            age = -1
-            for l in self.dx:  # [:-1]
-                age += 1
-                C_x = ((1 / (1 + i)) ** (age + 1)) * l * ((1 + i) ** 0.5)
-                self.Cx.append(C_x)
-        if self.Mx == []:
-            # self.Mx = []
-            for m in range(0, len(self.Cx)):
-                self.Mx.append(sum(self.Cx[m:-1]))  # [m:-2] according notes from ucm.es, [m:-1]
+            if lx_g>0:
+                self.e_x.append(0.5 + sum_lx / lx_g)  # [g+1:-2] according notes from ucm.es, [g+1:-1]
+            else:
+                self.e_x.append(0.5)
 
     # Actuarial notation -------------------
     def qx(self, x):
@@ -195,7 +145,7 @@ class MortalityTable:
 
     def px(self, x):
         """ px : Returns the probability of surviving within 1 year """
-        return 1000 - self.q_x[x]
+        return 1000 - self.qx(x)
 
     def tpx(self, x, t):
         """ tqx : Returns the probability that x will survive within t years """
@@ -225,7 +175,7 @@ class MortalityTable:
 
 # Actuarial class: calculate actuarial notations
 
-class Actuarial:
+class Actuarial(Pers):
     # rate: actuarial rate
     # pers: MortalityTable representing one persone
     def __init__(self, rate, pers):
@@ -233,17 +183,20 @@ class Actuarial:
             self.rate = lambda age: rate
         else:
             self.rate = rate
-        self.pers = pers
+        self.l_x = pers.l_x
+        self.q_x = pers.q_x
+        self.e_x = pers.e_x
+        self.w = pers.w
 
         # Commutations ------------------
 
         # Dx calculation
         self.D_x = []
-        age = -1
-        for j in pers.l_x:
-            age += 1
+        age = 0
+        for j in self.l_x:
             i = self.rate(age)
             self.D_x.append(((1 / (1 + i)) ** age) * j)
+            age +=1
 
         # Nx calculation
         self.N_x = []
@@ -253,12 +206,13 @@ class Actuarial:
         # Cx calculation
         self.C_x = []
         age = -1
-        lx0 = pers.l_x[0]
-        for lx1 in pers.l_x:  # [:-1]
+        if len(self.l_x)>0:
+            lx0 = self.l_x[0]
+        for lx1 in self.l_x:   #[:-1]
             age += 1
             i = self.rate(age)
-            C_x = ((1 / (1 + i)) ** (age + 1)) * (lx0 - lx1) * ((1 + i) ** 0.5)
-            self.C_x.append(C_x)
+            Cx = ((1/(1+i))**(age+1))*(lx0-lx1)*((1+i)**0.5)
+            self.C_x.append(Cx)
             lx0 = lx1
 
         # Mx calculation
@@ -270,11 +224,17 @@ class Actuarial:
 
     def Dx(self, x):
         """ Return the Dx """
-        return self.D_x[x]
+        if x < len(self.D_x):
+            return self.D_x[x]
+        else:
+            return 0
 
     def Nx(self, x):
         """ Return the Nx """
-        return self.N_x[x]
+        if x < len(self.N_x):
+            return self.N_x[x]
+        else:
+            return 0
 
     def Sx(self, x):
         """ Return the Sx """
@@ -282,11 +242,17 @@ class Actuarial:
 
     def Cx(self, x):
         """ Return the Cx """
-        return self.C_x[x]
+        if x < len(self.C_x):
+            return self.C_x[x]
+        else:
+            return 0
 
     def Mx(self, x):
         """ Return the Mx """
-        return self.M_x[x]
+        if x < len(self.M_x):
+            return self.M_x[x]
+        else:
+            return 0
 
     def Rx(self, x):
         """ Return the Rx """
@@ -296,7 +262,7 @@ class Actuarial:
     def nEx(self, x, n):
         """ nEx : Returns the EPV of a pure endowment (deferred capital).
         Pure endowment benefits are conditional on the survival of the policyholder. (v^n * npx) """
-        return self.D_x[x + n] / self.D_x[x]
+        return self.Dx(x+n)/self.Dx(x)
 
     # Actuarial present value
 
@@ -304,17 +270,17 @@ class Actuarial:
     def Ax(self, x):
         """ Ax : Returns the Expected Present Value (EPV) of a whole life insurance (i.e. net single premium).
         It is also commonly referred to as the Actuarial Value or Actuarial Present Value. """
-        return self.M_x[x] / self.D_x[x]
+        return self.Mx(x)/self.Dx(x)
 
     # Term insurance ---
     def Axn(self, x, n):
         """ (A^1)x:n : Returns the EPV (net single premium) of a term insurance. """
-        return (self.M_x[x] - self.M_x[x + n]) / self.D_x[x]
+        return (self.Mx(x)-self.Mx(x+n))/self.Dx(x)
 
     # Deferred insurance benefits ---
     def tAx(self, x, t):
         """ n/Ax : Returns the EPV (net single premium) of a deferred whole life insurance. """
-        return self.M_x[x + t] / self.D_x[x]
+        return self.Mx(x+t)/self.Dx(x)
 
     def tAxn(self, x, n, t):
         pass
@@ -352,27 +318,51 @@ class Actuarial:
 
     def aaxn(self, x, n, m=1):
         """ äxn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary life annuity-anticipatory. Payable 'm' per year at the beginning of the period """
-        if m == 1:
-            return (self.N_x[x] - self.N_x[x + n]) / self.D_x[x]
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = (self.Nx(x)-self.Nx(x+n))/Dx
         else:
-            return (self.N_x[x] - self.N_x[x + n]) / self.D_x[x] - (
-                (float(m - 1) / float(m * 2)) * (1 - self.nEx(x, n)))
+            res = 1
+        if m == 1:
+            return res
+        else:
+            return res - ((float(m-1)/float(m*2)) * (1 - self.nEx(x,n)))
 
     def axn(self, x, n, m=1):
         """ axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary life annuity-late. Payable 'm' per year at the ends of the period """
-        if m == 1:
-            return (self.N_x[x + 1] - self.N_x[x + n + 1]) / self.D_x[x]
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = (self.Nx(x+1)-self.Nx(x+n+1))/Dx
         else:
-            return (self.N_x[x + 1] - self.N_x[x + n + 1]) / self.D_x[x] + (
-                (float(m - 1) / float(m * 2)) * (1 - self.nEx(x, n)))
+            res = 0
+        if m == 1:
+            return res
+        else:
+            return res + ((float(m-1)/float(m*2)) * (1 - self.nEx(x,n)))
 
     def aax(self, x, m=1):
         """ äx : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life annuity-anticipatory). Payable 'm' per year at the beginning of the period """
-        return self.N_x[x] / self.D_x[x] - (float(m - 1) / float(m * 2))
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = self.Nx(x)/Dx
+        else:
+            res = 1
+        if m == 1:
+            return res
+        else:
+            return res - (float(m-1)/float(m*2))
 
     def ax(self, x, m=1):
         """ ax : Returns the actuarial present value of an (immediate) annuity of 1 per time period (whole life annuity-late). Payable 'm' per year at the ends of the period """
-        return (self.N_x[x] / self.D_x[x] - 1) + (float(m - 1) / float(m * 2))
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = self.Nx(x+1)/Dx
+        else:
+            res = 0
+        if m == 1:
+            return res
+        else:
+            return res + (float(m-1)/float(m*2))
 
     def taaxn(self, x, n, m=1):
         pass
@@ -382,29 +372,46 @@ class Actuarial:
 
     def taax(self, x, t, m=1):
         """ n/äx : Return the actuarial present value of a deferred annuity (deferred t years): t-year deferred whole life annuity-anticipatory. Payable 'm' per year at the beginning of the period """
-        return self.N_x[x + t] / self.D_x[x] - ((float(m - 1) / float(m * 2)) * (1 - self.nEx(x, t)))
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = self.Nx(x+t)/Dx
+        else:
+            res = (1 if t==0 else 0)
+        if m == 1:
+            return res
+        else:
+            return res - ((float(m-1)/float(m*2)) * (1 - self.nEx(x,t)))
 
     def tax(self, x, t, m=1):
         """ n/ax : Return the actuarial present value of a deferred annuity (deferred t years): t-year deferred whole life annuity-late. Payable 'm' per year at the ends of the period """
-        return self.N_x[x + t + 1] / self.D_x[x] + ((float(m - 1) / float(m * 2)) * (1 - self.nEx(x, t)))
+        Dx = self.Dx(x)
+        if Dx>0:
+            res = self.Nx(x+t+1)/Dx
+        else:
+            res = 0
+        if m == 1:
+            return res
+        else:
+            return res + ((float(m-1)/float(m*2)) * (1 - self.nEx(x,t)))
+    
 
     # Arithmetically increasing annuities (unitary) -----------------
 
     def Iaaxn(self, x, n):
         """ during a term certain, IAn """
-        return (self.Sx(x) - self.Sx(x + n) - n * self.N_x[x + n]) / self.D_x[x]
+        return (self.Sx(x)-self.Sx(x+n)-n*self.N_x[x+n]) / self.Dx(x)
 
     def Iaxn(self, x, n):
         """ during a term certain, IAn """
-        return (self.Sx(x + 1) - self.Sx(x + n + 1) - n * self.N_x(x + n + 1)) / self.D_x[x]
+        return (self.Sx(x+1)-self.Sx(x+n+1)-n*self.N_x(x+n+1))/self.Dx(x)
 
     def Iaax(self, x):
         """ (Iä)x : Returns the present value of annuity-certain at the beginning of the first year and increasing linerly. Arithmetically increasing annuity-anticipatory """
-        return self.Sx(x) / self.D_x[x]
+        return self.Sx(x)/self.Dx(x)
 
     def Iax(self, x):
         """ (Ia)x : Returns the present value of annuity-certain at the end of the first year and increasing linerly. Arithmetically increasing annuity-late """
-        return self.Sx(x + 1) / self.D_x[x]
+        return self.Sx(x+1)/self.Dx(x)
 
     def Iaaxn(self, x, n):
         pass
@@ -414,11 +421,12 @@ class Actuarial:
 
     def Itaax(self, x, t):
         """ deffered t years """
-        return (self.Sx(x) - self.Sx(x + t)) / self.D_x[x]
+        return (self.Sx(x)-self.Sx(x+t))/self.Dx(x)
 
     def Itax(self, x, t):
         """ deffered t years """
-        return (self.Sx(x + 1) - self.Sx(x + t + 1)) / self.D_x[x]
+        return (self.Sx(x+1) - self.Sx(x+t+1))/self.Dx(x)
+
 
 
 # Annuity formula ------------
