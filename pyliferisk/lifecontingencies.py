@@ -318,12 +318,12 @@ class Actuarial(Pers):
         """ This function evaluates the APV of an increasing life insurance."""
         pass
 
-    def qAx(self, x, q):
+    def qAx(self, x, q, m=1):
         """ This function evaluates the APV of
         a geometrically increasing annual annuity-due """
         pass
 
-    def qAxn(self, x, n, q):
+    def qAxn(self, x, n, q, m=1):
         pass
 
     def qtAx(self, x, t, q):
@@ -466,7 +466,7 @@ class Actuarial(Pers):
 # Annuity formula ------------
 
 
-def annuity(mt, x, n, p, m=1, *args):
+def annuity(mt, i, x, n, p, m=1, *args):
     # annuity(mt,x,n,0/1,m=1,['a'/'g',q],-d)
     l = len(args)
     post = False
@@ -541,36 +541,38 @@ def annuity(mt, x, n, p, m=1, *args):
     else:
         pass
 
+    pers = Pers(mt)
+    act = Actuarial(i, pers)
     if not incr and not deff and not wh_l and not post:
-        return aaxn(mt, x, n, m)
+        return act.aaxn(x, n, m)
     elif not incr and not deff and not wh_l and post:
-        return axn(mt, x, n, m)
+        return act.axn(x, n, m)
     elif not incr and not deff and wh_l and not post:
-        return aax(mt, x, m)
+        return act.aax(x, m)
     elif not incr and not deff and wh_l and post:
-        return ax(mt, x, m)
+        return act.ax(x, m)
     elif not incr and deff and not wh_l and not post:
-        return taaxn(mt, x, n, t, m)
+        return act.taaxn(x, n, t, m)
     elif not incr and deff and not wh_l and post:
-        return taxn(mt, x, n, t, m)
+        return act.taxn(x, n, t, m)
     elif not incr and deff and wh_l and not post:
-        return taax(mt, x, t, m)
+        return act.taax(x, t, m)
     elif not incr and deff and wh_l and post:
-        return tax(mt, x, t, m)
+        return act.tax(x, t, m)
     elif incr and not deff and not wh_l and not post:
-        return qaaxn(mt, x, n, q, m)
+        return act.qaaxn(x, n, q, m)
     elif incr and not deff and not wh_l and post:
-        return qaxn(mt, x, n, q, m)
+        return act.qAxn(x, n, q, m)
     elif incr and not deff and wh_l and not post:
-        return qaax(mt, x, q, m)
+        return act.qaax(x, q, m)
     elif incr and not deff and wh_l and post:
-        return qax(mt, x, q, m)
+        return act.qAx(x, q, m)
     elif incr and deff and not wh_l and not post:
-        return qtaaxn(mt, x, n, t, q, m)
+        return act.qtaaxn(x, n, t, q, m)
     elif incr and deff and not wh_l and post:
-        return qtaxn(mt, x, n, t, q, m)
+        return act.qtaxn(x, n, t, q, m)
     elif incr and deff and wh_l and not post:
-        return qtaax(mt, x, t, q, m)
+        return act.qtaax(x, t, q, m)
     else:
         # elif incr and deff and wh_l and post:
-        return Itax(mt, x, t)
+        return act.Itax(x, t)

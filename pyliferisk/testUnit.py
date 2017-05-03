@@ -43,6 +43,11 @@ class TestActuarialMethods(unittest.TestCase):
     def test_axy(self):
         axy = self.Act_H_F.ax(61,m=4)
         self.assertEqual(axy, 14.40246915)
+    
+    def test_annuity(self):
+        mt = lc.MortalityTable(nt= mortalitytables.SPAININE2004)
+        x = 67
+        self.assertEqual(lc.annuity(mt, 0.05, x, "w" ,1), 8.62)
 
 if __name__ == '__main__':
     unittest.main()

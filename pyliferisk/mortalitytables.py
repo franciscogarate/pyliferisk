@@ -278,7 +278,7 @@ HKF2014 = (
 
 
 import csv
-from lifecontingencies import *
+import lifecontingencies as lc
 import os
 script_dir = os.path.dirname(__file__)
 
@@ -306,5 +306,5 @@ def get_TGHF05(gender):
                 res[col_names[col_index]].append(val)
                 col_index += 1
     for col in col_names:
-        res[col] = MortalityTable(l_x = res[col])
+        res[col] = lc.MortalityTable(l_x = res[col])
     return res
