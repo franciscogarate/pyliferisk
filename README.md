@@ -1,8 +1,8 @@
-<h1>pyliferisk</h1>|PyPI version| |license|
+<h1>pyliferisk</h1>
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2017-03-07<br/>
-Version: 1.8<br/>
+Date: 2017-05-22<br/>
+Version: 1.9<br/>
 Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com, Florian Pons<br/>
 Site: github.com/franciscogarate/pyliferisk<br/>
 
@@ -26,7 +26,7 @@ https://help.github.com/categories/writing-on-github/
 * [Books](#books)
 
 
-#<a name="introduction"></a><h2>Introduction</h2>
+<a name="introduction"></a><h2>Introduction</h2>
 
 **Pyliferisk** is an open library written in python for life and actuarial calculation contracts, based on commonly used methodologies among actuaries (International Actuarial Notation).
 
@@ -59,7 +59,7 @@ Because computing plays an important role in the actuarial profession, but actua
 Nowadays, programming is becoming an indispensable skill for actuaries. Python is a clear, readable syntax, powerful and fast language. Easy to learn, especially when you are not used to coding. This language lets you write quickly the code you need, without cumbersome rules or variable predefined tasks. It is clear, forget ending with commas and using curly brackets in functions. 
 I highly recommend reading the [official introduction to python](http://www.python.org/about/)
 
-#<a name="quick-start"></a><h2>Quick Start</h2>
+<a name="quick-start"></a><h2>Quick Start</h2>
 
 The names of the formulas follow the International Actuarial Notation and are easily guessable, with a few exceptions regarding special characters (for example, ``A'x`` is replaced by ``AEx``).
 
@@ -83,8 +83,8 @@ The mortality table must be defined with the class ``MortalityTable()``. Example
 import pyliferisk.lifecontingencies as lc
 from pyliferisk.mortalitytables import SPAININE2004
 
-tariff=lc.MortalityTable(nt=SPAININE2004,i=0.02)
-experience=lc.MortalityTable(nt=SPAININE2004,i=0.02,perc=85)
+tariff=lc.MortalityTable(nt=SPAININE2004)
+experience=lc.MortalityTable(nt=SPAININE2004,perc=85)
 
 # Print the omega (limiting age) of the both mortality tables:
 print(tariff.w)
@@ -102,8 +102,8 @@ import matplotlib.pyplot as plt
 import pyliferisk.lifecontingencies as lc
 from pyliferisk.mortalitytables import SPAININE2004, GKM95
 import numpy as np
-tarifa=lc.MortalityTable(nt=SPAININE2004,i=0.02)
-experiencia=lc.MortalityTable(nt=GKM95,i=0.02,perc=75)
+tarifa=lc.MortalityTable(nt=SPAININE2004)
+experiencia=lc.MortalityTable(nt=GKM95,perc=75)
 x = np.arange(tarifa.w)
 y = tarifa.lx[:tarifa.w]
 z = experiencia.lx[:tarifa.w]
@@ -138,15 +138,15 @@ This formula is available for increasing annuities (Arithmetically and Geometric
 
 **Example**:
 ```python
-mt=MortalityTable(nt=SPAININE2004,i=0.02)
+mt=Actuarial(nt=SPAININE2004,i=0.02)
 annuity(mt,50,10,12,['g',0.03],-15)
 ```
 
 ![Picture](http://garpa.net/github/pyliferisk2.png)
 
-#<a name="examples"></a><h2>Examples</h2>
+<a name="examples"></a><h2>Examples</h2>
 ```python
-mt=lc.MortalityTable(nt=SPAININE2004,i=0.02)
+mt=lc.Actuarial(nt=SPAININE2004,i=0.02)
 x = 60 # age
 n = 15 # term
 d = 5  # 5 years deferred
@@ -154,7 +154,7 @@ d = 5  # 5 years deferred
 return lc.annuity(mt,x,n,0,-d)
 ```
 
-#<a name="potential-uses"></a><h2>Potential uses</h2>
+<a name="potential-uses"></a><h2>Potential uses</h2>
 
 Python is used by several well-known banks companies for asset valuations. The exact search on Google for "financial modelling in Python" shows more than 65.000 results.
 
@@ -176,7 +176,7 @@ In fact, you can find how Python have been easily used by several advisors in or
 
 Take a look at application domains where Python is used: http://www.python.org/about/apps/
 
-#<a name="other-libraries"></a><h2>Other libraries</h2>
+<a name="other-libraries"></a><h2>Other libraries</h2>
 
 Maths or Statistics libraries:
 
@@ -204,7 +204,7 @@ Maths or Statistics libraries:
 * [https://github.com/greedo/python-xbrl](https://github.com/greedo/python-xbrl)
 : python-xbrl is a library for parsing xbrl documents (EIOPA, ECB, SEC..)
 
-#<a name="installation"></a><h2>Installation</h2>
+<a name="installation"></a><h2>Installation</h2>
 
 <h3>Python 2.7 installation</h3>
 
@@ -241,14 +241,14 @@ For professional use, Rodeo or Canopy platform ([https://www.enthought.com/produ
 
 Note: Apart of these programs, Python must be installed in the computer.
 
-#<a name="links"></a><h2>Links</h2>
+<a name="links"></a><h2>Links</h2>
 
 * http://pandas.pydata.org/talks.html
 * http://blog.wesmckinney.com/ (author's panda)
 * http://ipython.org/presentation.html
 * http://www.amazon.com/Financial-Modelling-Python-Finance-Series/dp/0470987847/
 
-#<a name="books"></a><h2>Books</h2>
+<a name="books"></a><h2>Books</h2>
 
 The author is checking the library with the examples from the following textbooks:
 - Actuarial Mathematics for Life Contingent Risks (David C. M. Dickson, Mary R. Hardy and Howard R. Waters) Cambridge University Press, 2009.
