@@ -3,8 +3,9 @@ Pyliferisk is a python library for life actuarial calculations, simple, powerful
 
 Date: 2017-05-22<br/>
 Version: 1.9<br/>
-Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com, Florian Pons<br/>
+Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
 Site: github.com/franciscogarate/pyliferisk<br/>
+Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation.pdf)
 
 ![Picture](http://www.garpa.net/github/pyliferisk.png)
 
@@ -19,10 +20,7 @@ https://help.github.com/categories/writing-on-github/
 * [Introduction](#introduction)
 * [Quick Start](#quick-start)
 * [Examples](#examples)
-* [Potential uses](#potential-uses)
-* [Other libraries](#other-libraries)
 * [Installation](#installation)
-* [Links](#links)
 * [Books](#books)
 
 
@@ -30,34 +28,17 @@ https://help.github.com/categories/writing-on-github/
 
 **Pyliferisk** is an open library written in python for life and actuarial calculation contracts, based on commonly used methodologies among actuaries (International Actuarial Notation).
 
-This library is able to cover all life contingencies risks (since the actuarial formulas follow the International Actuarial Notation), as well as to support the main insurance products:
-* Traditional Business
-* Term Assurance
-* Annuity
-* Unit Linked/Universal Life
+This library is able to cover all life contingencies risks (since the actuarial formulas follow the International Actuarial Notation), as well as to support the main insurance products.
 
-Additionally, the library can be easily tailored to any particular or local specifications, since Python is a very intuitive language.
-
-It is ideal not only for academic purposes, but also for professional use by actuaries (implementation of premiums and reserves modules) or by auditors (validation of reserves or capital risk models such as parallel runs).
+Additionally, the library can be easily tailored to any particular or local specifications, since Python is a very intuitive language. It is ideal not only for academic purposes, but also for professional use by actuaries (implementation of premiums and reserves modules) or by auditors (validation of reserves or capital risk models such as parallel runs).
 
 This library is distributed as a single file module (``lifecontingencies.py``) and has no dependencies other than the Python Standard Library.
 
-While pyliferisk library version 1.1 incorporated some useful basic functions to calculate the present value of cash-flows (it does present value calculations of life payment contingent) using fixed or variable discount rates, it has been discontinued from version 1.2 onwards. I highly recommend to use other mathematical libraries (such as SciPy and NumPy) since they are better for this purposes, moreover other potential uses such as random number generation, interpolation, etc. Please, see the section [Other libraries](#other-libraries) to known how to increase the funcionalities (as import results in MS Excel, ESG, C++ integration, etc...)
-
 Additionally, the package includes several life mortality tables (``mortalitytables.py``), mainly extracted from [academic textbooks](#books).
-
-You can find also examples for different contracts in the /examples/ folder. To run perfectly, please copy the example file in the same directory where you have the library.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. The author does not take any legal responsibility for the accuracy, completeness, or usefulness of the information herein.
-
-<h3>Why Python?</h3>
-
-Because computing plays an important role in the actuarial profession, but actuaries are not programmers. Python is friendly and easy to learn.
-
-Nowadays, programming is becoming an indispensable skill for actuaries. Python is a clear, readable syntax, powerful and fast language. Easy to learn, especially when you are not used to coding. This language lets you write quickly the code you need, without cumbersome rules or variable predefined tasks. It is clear, forget ending with commas and using curly brackets in functions. 
-I highly recommend reading the [official introduction to python](http://www.python.org/about/)
 
 <a name="quick-start"></a><h2>Quick Start</h2>
 
@@ -154,66 +135,7 @@ d = 5  # 5 years deferred
 return lc.annuity(mt,x,n,0,-d)
 ```
 
-<a name="potential-uses"></a><h2>Potential uses</h2>
-
-Python is used by several well-known banks companies for asset valuations. The exact search on Google for "financial modelling in Python" shows more than 65.000 results.
-
-![Picture](http://garpa.net/github/financial_modelling_python.jpg)
-
-Python is perfect for risk analysis in big data, since is not limited by database size and is able to access libraries for working with any database is very easy(as DB2, Oracle, MSAccess, SQL..). Moreover, [additional libraries](#other-libraries) (such as SciPy and NumPy) can be included in order to increase the functionality, such as cash flow operations, random number generation, interpolation, etc.
-
-This library may be used in tariff processes, in the design phase of new products such as profit testing or estimation of future benefits. Other uses include:
-- Auditing purposes tool
-- Assumption calibrations, back-testing, etc..
-- Replicate the main calculations of the internal model for implementation in pricing, product approval, reserving, etc..
-- Perform small reports (output format may be xml, xls, etc...)
-
-If you find something that Python cannot do, or if you need the performance advantage of low-level code, you can write or reuse extension modules in C or C++.
-
-**Solvency II and Actuarial Industrialization**: For European actuaries, Solvency II opens a big opportunity. The new requirements transform into agility, transversality and auditability. The internal model is not only software, it should be an internal process used extensively where all parts must walk hand in hand.
-
-In fact, you can find how Python have been easily used by several advisors in order to implement QRTs requirements.
-
-Take a look at application domains where Python is used: http://www.python.org/about/apps/
-
-<a name="other-libraries"></a><h2>Other libraries</h2>
-
-Maths or Statistics libraries:
-
-* [https://www.scipy.org/](https://www.scipy.org/)
-: Scientific Tools for Python
-
-* [http://www.numpy.org/](http://www.numpy.org/)
-: NumPy is the fundamental package for scientific computing with Python.
-
-* [http://pandas.pydata.org/](http://pandas.pydata.org/)
-: Python Data Analysis Library.
-
-* [http://matplotlib.org](http://matplotlib.org)
-: Data visualization and graphics tools. Matplotlib is a python 2D plotting library which produces publication quality figures
-
-* [http://www.statsmodels.org/stable/](http://www.statsmodels.org/stable/)
-: Statistics in Python. scikits.statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models
-
-* [http://ipython.org/](http://ipython.org/)
-: Productive Interactive Computing
-
-* [http://cython.org/](http://cython.org/)
-: Cython is a language that makes writing C extensions for the Python language as easy as Python itself.
-
-* [https://github.com/greedo/python-xbrl](https://github.com/greedo/python-xbrl)
-: python-xbrl is a library for parsing xbrl documents (EIOPA, ECB, SEC..)
-
-<a name="installation"></a><h2>Installation</h2>
-
-<h3>Python 2.7 installation</h3>
-
-Python can be used on 21 different operating systems and environments. There are even versions that run on .NET and the Java virtual machine: 
-[www.python.org/downloads](https://www.python.org/downloads/)
-
-The Python implementation is under an open source license that makes it freely usable and distributable, even for commercial use. The [Python license](http://www.python.org/psf/license/) is administered by the Python Software Foundation.
-
-<h3>pyliferisk library installation</h3>
+<h3>Installation</h3>
 
 Once pyhon is running, just install this library with ``pip install pyliferisk`` or download the source code at github (git clone).
 
@@ -223,30 +145,15 @@ pip install pyliferisk
 
 Then, import this library in projects is automatic as usually:
 
-``import pyliferisk``
+```python
+import pyliferisk.lifecontingencies as lc
+```
 
 or, if only like to use specific functions:
 
-``from pyliferisk import annuity``
-
-
-<h3>Desktop Software IDE </h3>
-
-I highly recommended **Rodeo** [http://rodeo.yhat.com/](http://rodeo.yhat.com/) for desktop or
-**Sublime Text 2**: [http://www.sublimetext.com/](http://www.sublimetext.com/). Minimal and non-necessary settings. Ideal for testing. Sublime Text uses a custom UI toolkit, optimized for speed and beauty, and may be downloaded and evaluated for free.
-
-Eclipse (or Aptana Studio 3 -based on Eclipse-)is an integrated development environment (IDE) recommended especially for python projects with a lot of files. Both are open-source and multi-platform. Please check the respective tutorials for installation ([http://www.eclipse.org](http://www.eclipse.org) and [http://www.aptana.org](http://www.aptana.org)).
-
-For professional use, Rodeo or Canopy platform ([https://www.enthought.com/products/canopy/](https://www.enthought.com/products/canopy/)): a comprehensive Python analysis environment, with financial case studies: Risk calculation for financial analysis ([https://www.enthought.com/services/consulting/case-studies/VaR](https://www.enthought.com/services/consulting/case-studies/VaR)).
-
-Note: Apart of these programs, Python must be installed in the computer.
-
-<a name="links"></a><h2>Links</h2>
-
-* http://pandas.pydata.org/talks.html
-* http://blog.wesmckinney.com/ (author's panda)
-* http://ipython.org/presentation.html
-* http://www.amazon.com/Financial-Modelling-Python-Finance-Series/dp/0470987847/
+```python
+from pyliferisk.mortalitytables import SPAININE2004
+```
 
 <a name="books"></a><h2>Books</h2>
 
@@ -255,5 +162,4 @@ The author is checking the library with the examples from the following textbook
 - Actuarial Mathematics (2nd Edition), Bowers et al.  Society of Actuaries, 1997.
 - Matemática de los Seguros de Vida, (Gil Fana J.A., Heras Matínez A. and Vilar Zanón J.L.) Fundación Mapfre Estudios, 1999.
 
-It will be documented in the examples folder. Contributions are greatly appreciated. 
-
+Contributions are greatly appreciated. 
