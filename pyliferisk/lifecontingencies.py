@@ -72,6 +72,21 @@ class MortalityTable:
                 lx_g = self.lx[g]
                 self.ex.append(0.5 + sum(self.lx[g+1:-1]) / lx_g) #[g+1:-2] according notes from ucm
 
+    def view(self, start = 0, end = 10, var = 'lx'):
+        column  = {'qx': self.qx, 'lx': self.lx, 'dx': self.dx, 'ex': self.ex, 'nt': self.nt, \
+                   'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'nEx': self.nEx}
+        table_str = ''
+        index = start
+        if var == 'nt':
+            subs = 'index'
+        else:
+            subs = 'x'
+        for i in column[var][start:end+1]:
+            table_str += '[{}={}]  {}={}\n'.format(subs, index, var, i)
+            index += 1
+        print(table_str + 'Total number of rows for {} = {}'.format(var, len(column[var])))
+
+        
 class Actuarial:
     def __init__(self, l_x=[], q_x=[], nt=None, i=None, perc=100):
         self.lx = l_x
@@ -146,6 +161,21 @@ class Actuarial:
             for m in range(0, len(self.Cx)):
                 self.Mx.append(sum(self.Cx[m:-1])) # [m:-2] according notes from ucm
 
+    def view(self, start = 0, end = 10, var = 'lx'):
+        column  = {'qx': self.qx, 'lx': self.lx, 'dx': self.dx, 'ex': self.ex, 'nt': self.nt, \
+                   'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'nEx': self.nEx}
+        table_str = ''
+        index = start
+        if var == 'nt':
+            subs = 'index'
+        else:
+            subs = 'x'
+        for i in column[var][start:end+1]:
+            table_str += '[{}={}]  {}={}\n'.format(subs, index, var, i)
+            index += 1
+        print(table_str + 'Total number of rows for {} = {}'.format(var, len(column[var])))
+
+   
 # Actuarial notation -------------------
 def qx(mt,x):
     """ qx: Returns the probability that a life aged x dies before 1 year
