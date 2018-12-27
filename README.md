@@ -1,101 +1,39 @@
 <h1>pyliferisk</h1>
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2017-05-22<br/>
-Version: 1.9<br/>
+Date: 2018-12-27<br/>
+Version: 1.10<br/>
 Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
-Site: github.com/franciscogarate/pyliferisk<br/>
-Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation.pdf)
 
 ![Picture](http://www.garpa.net/github/pyliferisk.png)
 
-<!--
-https://help.github.com/categories/writing-on-github/
--->
-
-<hr>
-
-<h2>Table of contents</h2>
-
-* [Introduction](#introduction)
-* [Quick Start](#quick-start)
-* [Examples](#examples)
-* [Installation](#installation)
-* [Books](#books)
+Documentation
+-------------
+Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation.pdf)
 
 
-<a name="introduction"></a><h2>Introduction</h2>
-
-**Pyliferisk** is an open library written in python for life and actuarial calculation contracts, based on commonly used methodologies among actuaries (International Actuarial Notation).
+Introduction
+------------
+**Pyliferisk** is an open library written in Python for life and actuarial calculation contracts, based on commonly used methodologies among actuaries (International Actuarial Notation).
 
 This library is able to cover all life contingencies risks (since the actuarial formulas follow the International Actuarial Notation), as well as to support the main insurance products.
 
-Additionally, the library can be easily tailored to any particular or local specifications, since Python is a very intuitive language. It is ideal not only for academic purposes, but also for professional use by actuaries (implementation of premiums and reserves modules) or by auditors (validation of reserves or capital risk models such as parallel runs).
+This library is distributed as a single file module and has no dependencies other than the Python Standard Library, making it amazingly fast. It's compatible with both version Python 3.x and 2.7.
 
-This library is distributed as a single file module (``lifecontingencies.py``) and has no dependencies other than the Python Standard Library.
+Additionally, the package includes several life mortality tables (``pyliferisk.mortalitytables``), mainly extracted from academic textbooks. Tables are added in list format. ie: SCOT_DLT_00_02_M = [0, 0.006205, 0.000328, 0.00026 ....]
+First item indicates the age when table starts.
 
-Additionally, the package includes several life mortality tables (``mortalitytables.py``), mainly extracted from [academic textbooks](#books).
+Quick Start
+-----------
+The names of the formulas follow the International Actuarial Notation and are easily guessable (qx, lx, px, w, dx, ex, Ax, Axn..), with a few exceptions regarding special characters.
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+The **reserved variables** (in addition of python language) are the following:
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. The author does not take any legal responsibility for the accuracy, completeness, or usefulness of the information herein.
-
-<a name="quick-start"></a><h2>Quick Start</h2>
-
-The names of the formulas follow the International Actuarial Notation and are easily guessable, with a few exceptions regarding special characters (for example, ``A'x`` is replaced by ``AEx``).
-
-The **reserved variables** (in addition of python languages) are the following:
-
-For the mortality table:
-* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=GKM95 (Note: GKM95 must be included in mortalitytables.py)
+For the mortality assumptions in ``MortalityTable()``:
+* ``nt`` = The actuarial table used to perform life contingencies calculations. Syntax: nt=GKM95
 * ``i`` = interest rate. The effective rate of interest, namely, the total interest earned in a year. Syntax: i=0.02
 * ``perc`` = Optional variable to indicate the percentage of mortality to be applied. Syntax: perc=85
 Variable ``perc`` can be omitted, in this case it will be 100 by default.
-
-For actuarial formulas:
-* ``x`` = The age of the insured.
-* ``n`` = The horizon (term of insurance) in years or payment duration
-* ``m`` = Number of fractional payments per period. If missing, m is set as 0.
-* ``d`` = The deferring period in years.
-
-The mortality table must be defined with the class ``MortalityTable()``. Example:
-
-```python
-import pyliferisk.lifecontingencies as lc
-from pyliferisk.mortalitytables import SPAININE2004
-
-tariff=lc.MortalityTable(nt=SPAININE2004)
-experience=lc.MortalityTable(nt=SPAININE2004,perc=85)
-
-# Print the omega (limiting age) of the both mortality tables:
-print(tariff.w)
-print(experience.w)
-
-# Print the qx at 50 years old:
-print(tariff.qx[50])
-print(experience.qx[50])
-```
-
-Example 2:
-
-```python
-import matplotlib.pyplot as plt
-import pyliferisk.lifecontingencies as lc
-from pyliferisk.mortalitytables import SPAININE2004, GKM95
-import numpy as np
-tarifa=lc.MortalityTable(nt=SPAININE2004)
-experiencia=lc.MortalityTable(nt=GKM95,perc=75)
-x = np.arange(tarifa.w)
-y = tarifa.lx[:tarifa.w]
-z = experiencia.lx[:tarifa.w]
-plt.plot(x,y, color = 'blue')
-plt.plot(x,z, color = 'red')
-plt.ylabel('lx')
-plt.xlabel('edad')
-```
-![Picture](http://garpa.net/github/pyliferisk3.png)
-
-Also, 
 
 All the actuarial formulas must include a minimum of 2 variables: mt (mortality table) and x (age) 
 If necessary, additional variables should be included with the following order: 
@@ -103,63 +41,92 @@ If necessary, additional variables should be included with the following order:
 
 Variable ``m`` can be omitted, in this case it will be 1 (annual payment) by default.
 
-<h3>Smart formulas: annuity() and A()</h3>
-Additionally, there are two **smart formulas**: annuity() and A(), where the number of variables are not fixed:
+Additionally, there are two smart formulas: annuity() and A(), where the number of variables are not fixed:
 
-``annuity(nt,x,n,p,m,['a/g',c],-d)``
-
-**Specifications**:
-This formula is available for increasing annuities (Arithmetically and Geometrically). Syntaxis: It must be include as ['a',c] or ['g',c'] respectively.
-* ``n`` = A integer number (term of insurance in years) or 'w' = whole-life. (Also, 99 years is defined to be whole-life).
-* ``p`` = Moment of payment. Syntaxis: 0 = begining of each period (prepaid), 1 = end of each period (postpaid),
-* ``'a'`` = Arithmetical 
-* ``'g'`` = Geometrical
-* ``c`` = The increase rate. Syntax: ['g',c] or ['a',c]. For example, ['g',0.03]
-* ``-d`` = The n-years deferring period as negative number. 
-
-**Example**:
-```python
-mt=Actuarial(nt=SPAININE2004,i=0.02)
-annuity(mt,50,10,12,['g',0.03],-15)
-```
+``annuity(nt, x, n, p, m, ['a/g', c], -d)``
+* mt = the mortality table
+* x = the age as integer number.   
+* n = A integer number (term of insurance in years) or 'w' = whole-life.
+* p = Moment of payment. Syntaxis: 0 = begining of each period (prepaid), 1 = end of each period (postpaid),
+Optional variables:
+* m = Payable 'm' per year (frational payments). Default = 1 (annually)
+* 'a' or 'g' = Arithmetical / Geometrical
+* q = The increase rate. Syntax: ['g',q] or ['a',q]. For example, ['g',0.03]
+Deferring period:
+* -d = The n-years deferring period as negative number. 
 
 ![Picture](http://garpa.net/github/pyliferisk2.png)
 
-<a name="examples"></a><h2>Examples</h2>
+**Example 1:**
+Print the omega (limiting age) of the both mortality tables and the qx at 50 years-old:
 ```python
-mt=lc.Actuarial(nt=SPAININE2004,i=0.02)
-x = 60 # age
-n = 15 # term
-d = 5  # 5 years deferred
+from pyliferisk import MortalityTable
+from pyliferisk.mortalitytables import SPAININE2004, GKM95
 
-return lc.annuity(mt,x,n,0,-d)
+tariff = MortalityTable(nt=SPAININE2004)
+experience = MortalityTable(nt=GKM95, perc=85)
+
+# Print the omega (limiting age) of the both tables:
+print(tariff.w)
+print(experience.w)
+
+# Print the qx at 50 years old:
+print(tariff.qx[50] / 1000)
+print(experience.qx[50] / 1000)
 ```
 
-<h3>Installation</h3>
-
-Once pyhon is running, just install this library with ``pip install pyliferisk`` or download the source code at github (git clone).
-
-```sh
-pip install pyliferisk
-```
-
-Then, import this library in projects is automatic as usually:
-
+**Example 2:**
+Plotting a surviving graph:
 ```python
-import pyliferisk.lifecontingencies as lc
+import matplotlib.pyplot as plt
+from pyliferisk import *
+from pyliferisk.mortalitytables import SPAININE2004, GKM95
+
+tariff = MortalityTable(nt=SPAININE2004)
+experience = MortalityTable(nt=GKM95, perc=75)
+x = range(0, tariff.w)
+y = tariff.lx[:tariff.w]
+z = experience.lx[:tariff.w]
+plt.plot(x,y, color = 'blue')
+plt.plot(x,z, color = 'red')
+plt.ylabel('lx')
+plt.xlabel('age')
 ```
+![Picture](http://garpa.net/github/pyliferisk3.png)
 
-or, if only like to use specific functions:
-
+**Example 3:**:
+A Life Temporal insurance for a male, 30 years-old and a horizon for 10 years, fixed annual premium (GKM95, interest 6%):
 ```python
-from pyliferisk.mortalitytables import SPAININE2004
+from pyliferisk import *
+from pyliferisk.mortalitytables import GKM95
+
+nt = Actuarial(nt=GKM95, i=0.06)
+x = 30
+n = 10
+C = 1000
+
+print(C * (Axn(nt, x, n) / annuity(nt, x, n, 0)))
 ```
 
-<a name="books"></a><h2>Books</h2>
+Installation
+------------
+Once Pyhon is running, just install this library with ``pip install pyliferisk`` 
 
-The author is checking the library with the examples from the following textbooks:
-- Actuarial Mathematics for Life Contingent Risks (David C. M. Dickson, Mary R. Hardy and Howard R. Waters) Cambridge University Press, 2009.
-- Actuarial Mathematics (2nd Edition), Bowers et al.  Society of Actuaries, 1997.
-- Matemática de los Seguros de Vida, (Gil Fana J.A., Heras Matínez A. and Vilar Zanón J.L.) Fundación Mapfre Estudios, 1999.
+Requeriments
+------------
+It's compatible with both versions of Python: 2.7 and 3.6
+Pyliferisk has no dependencies other than the Python Standard Library. That decreases the calculation runtime versus implementations under other libraries (such as Pandas).
 
-Contributions are greatly appreciated. 
+License
+-------
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. The author does not take any legal responsibility for the accuracy, completeness, or usefulness of the information herein.
+
+Contributions
+-------------
+Contributions, feedback and suggestions for improvements are greatly appreciated.
+
+Discussions take place on our mailing list.
+
+http://groups.google.com/group/openactuarial (subject: pyliferisk)
