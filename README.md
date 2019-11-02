@@ -1,7 +1,7 @@
 <h1>pyliferisk</h1>
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2019-11-03<br/>
+Date: 2019-11-02<br/>
 Version: 1.11<br/>
 Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
 
@@ -9,7 +9,7 @@ Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
 
 Documentation
 -------------
-Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation.pdf)
+Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation_1.11.pdf)
 
 
 Introduction
