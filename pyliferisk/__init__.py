@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #    pyliferisk: A python library for simple actuarial calculations
-#    Version: 1.10 - Dec 2018
-#    Copyright (C) 2018 Francisco Garate
+#    Version: 1.11 - Nov 2019
+#    Copyright (C) 2019 Francisco Garate
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -15,14 +15,13 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from .mortalitytables import *
 
 # Mortality table class ----------------
 
 class MortalityTable:
-    def __init__(self, l_x=[], q_x=[], i=[], nt=None, perc=100):
-        self.lx = l_x
-        self.qx = q_x
+    def __init__(self, lx=[], qx=[], i=[], nt=None, perc=100):
+        self.lx = lx
+        self.qx = qx
         self.dx = []
         self.ex = []
         self.w = 0
@@ -88,9 +87,9 @@ class MortalityTable:
 
         
 class Actuarial:
-    def __init__(self, l_x=[], q_x=[], nt=None, i=None, perc=100):
-        self.lx = l_x
-        self.qx = q_x
+    def __init__(self, lx=[], qx=[], nt=None, i=None, perc=100):
+        self.lx = lx
+        self.qx = qx
         self.dx = []
         self.ex = []
         self.w = 0
@@ -154,14 +153,14 @@ class Actuarial:
             age = -1
             for l in self.dx:   #[:-1]
                 age += 1
-                C_x = ((1 / (1 + i)) ** (age + 1))*l*((1 + i)**0.5)
+                C_x = ((1 / (1 + i)) ** (age + 1)) * l
                 self.Cx.append(C_x)
         if self.Mx == []:
             #self.Mx = []
             for m in range(0, len(self.Cx)):
                 self.Mx.append(sum(self.Cx[m:-1])) # [m:-2] according notes from ucm
 
-    def view(self, start = 0, end = 10, var = 'lx'):
+    def view(self, start=0, end=10, var='lx'):
         column  = {'qx': self.qx, 'lx': self.lx, 'dx': self.dx, 'ex': self.ex, 'nt': self.nt, \
                    'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'nEx': self.nEx}
         table_str = ''
@@ -267,7 +266,7 @@ def Sx(mt, x):
 
 def Cx(mt, x):
     """ Return the Cx """   
-    return ((1 / (1 + mt.i)) ** (x + 1)) * mt.dx[x] * ((1 + mt.i) ** 0.5)
+    return ((1 / (1 + mt.i)) ** (x + 1)) * mt.dx[x] * ((1 + mt.i))
 
 def Mx(mt, x):
     """ Return the Mx """
