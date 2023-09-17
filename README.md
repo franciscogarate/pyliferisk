@@ -1,15 +1,13 @@
 <h1>pyliferisk</h1>
 Pyliferisk is a python library for life actuarial calculations, simple, powerful and easy-to-use.
 
-Date: 2019-11-02<br/>
-Version: 1.11<br/>
+Date: 2023-09-16<br/>
+Version: 1.12.0<br/>
 Author: Francisco Garate - fgaratesantiago (at) gmail (dot) com<br/>
-
-![Picture](http://www.garpa.net/github/pyliferisk.png)
 
 Documentation
 -------------
-Documentation: [documentation.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation_1.11.pdf)
+Documentation: [documentation_1.12.pdf](https://github.com/franciscogarate/pyliferisk/raw/master/documentation_1.12.pdf)
 
 
 Introduction
@@ -55,15 +53,15 @@ Optional variables:
 Deferring period:
 * -d = The n-years deferring period as negative number. 
 
-![Picture](http://garpa.net/github/pyliferisk2.png)
+![Picture](http://garpa.net/assets/images/pyliferisk2.png)
 
 **Example 1:**
 Print the omega (limiting age) of the both mortality tables and the qx at 50 years-old:
 ```python
 from pyliferisk import MortalityTable
-from pyliferisk.mortalitytables import SPAININE2004, GKM95
+from pyliferisk.mortalitytables import INE2004, GKM95
 
-tariff = MortalityTable(nt=SPAININE2004)
+tariff = MortalityTable(nt=INE2004)
 experience = MortalityTable(nt=GKM95, perc=85)
 
 # Print the omega (limiting age) of the both tables:
@@ -80,9 +78,9 @@ Plotting a surviving graph:
 ```python
 import matplotlib.pyplot as plt
 from pyliferisk import *
-from pyliferisk.mortalitytables import SPAININE2004, GKM95
+from pyliferisk.mortalitytables import INE2004, GKM95
 
-tariff = MortalityTable(nt=SPAININE2004)
+tariff = MortalityTable(nt=INE2004)
 experience = MortalityTable(nt=GKM95, perc=75)
 x = range(0, tariff.w)
 y = tariff.lx[:tariff.w]
@@ -92,15 +90,15 @@ plt.plot(x,z, color = 'red')
 plt.ylabel('lx')
 plt.xlabel('age')
 ```
-![Picture](http://garpa.net/github/pyliferisk3.png)
+![Picture](http://garpa.net/assets/images/pyliferisk3.png)
 
 **Example 3:**:
-A Life Temporal insurance for a male, 30 years-old and a horizon for 10 years, fixed annual premium (GKM95, interest 6%):
+A Life Temporal insurance for a male, 30 years-old and a horizon for 10 years, fixed annual premium (GKM80, interest 6%):
 ```python
 from pyliferisk import *
 from pyliferisk.mortalitytables import GKM95
 
-nt = Actuarial(nt=GKM95, i=0.06)
+nt = Actuarial(nt=GKM80, i=0.06)
 x = 30
 n = 10
 C = 1000
