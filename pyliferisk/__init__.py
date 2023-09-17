@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #    pyliferisk: A python library for simple actuarial calculations
-#    Version: 1.11 - Nov 2019
-#    Copyright (C) 2019 Francisco Garate
+#    Version: 1.12.0
+#    Date: Sept 2023
+#    Copyright (C) 2023 Francisco Garate
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
