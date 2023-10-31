@@ -44,8 +44,11 @@ class MortalityTable:
                 if end_val < 1000.0:
                     end_val = val * perc / 100
                     self.qx.append(end_val)
+            # Apply the percentage to all the values in the table, except 
+            # for the last one, so the table will keep the same number of rows as 
+            # the original table and the last probability will always be 1,000
             if perc != 100:
-                self.qx.append(1000)
+                self.qx[-1] = 1000
         if self.lx == []:
             self.lx = [100000.0]
             for val in self.qx:
@@ -112,8 +115,11 @@ class Actuarial:
                 if end_val < 1000.0:
                     end_val = val * perc / 100
                     self.qx.append(end_val)
+            # Apply the percentage to all the values in the table, except 
+            # for the last one, so the table will keep the same number of rows as 
+            # the original table and the last probability will always be 1,000
             if perc != 100:
-                self.qx.append(1000)
+                self.qx[-1] = 1000
         if self.lx == []:
             self.lx = [100000.0]
             for val in self.qx:
