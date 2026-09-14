@@ -334,7 +334,7 @@ def qAx(mt, x, q):
     """ This function evaluates the APV of a geometrically increasing annual annuity-due """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return Ax(mtj, x)
 
 def qAxn(nt, x, n, q):
@@ -444,21 +444,21 @@ def qax(mt, x, q, m=1):
     """ geometrica """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return ax(mtj, x, m)
 
 def qaax(mt, x, q, m=1):
     """ geometrica """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return aax(mtj, x, m)
 
 def qaxn(mt, x, n, q, m=1):
     """ geometrica """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return axn(mtj, x, n, m)
 
 def qaaxn(mt, x, n, q, m = 1):
@@ -466,21 +466,21 @@ def qaaxn(mt, x, n, q, m = 1):
     #i = float(nt[1])
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return aaxn(mtj, x, n, m)
 
 def qtax(mt, x, t, q, m=1):
     """ geometrica """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return tax(mtj, x, t) + ((float(m - 1) / float(m * 2)) * (1 - nEx(mt, x, t)))
 
 def qtaax(mt, x, t, q, m=1):
     """ geometrica """
     q = float(q)
     j = (mt.i - q) / (1 + q)
-    mtj = Actuarial(nt=mt.nt, i=j)
+    mtj = Actuarial(lx=mt.lx[:], qx=mt.qx[:], i=j)
     return taax(mtj, x, t) - ((float(m - 1) / float(m * 2)) * (1 - nEx(mt, x, t)))
 
 
