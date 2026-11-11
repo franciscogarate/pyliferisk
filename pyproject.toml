@@ -36,4 +36,5 @@ Repository = "https://github.com/franciscogarate/pyliferisk"
 test = ["pytest"]
 
 [tool.setuptools]
+package-dir = {"" = "src"}
 packages = ["pyliferisk"]
