@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import pandas as pd
 from pyliferisk import MortalityTable
 import matplotlib.pyplot as plt

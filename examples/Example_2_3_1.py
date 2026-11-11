@@ -1,5 +1,5 @@
-#!/usr/bin/python
 from pyliferisk import *
+from pyliferisk.mortalitytables import FIN
 import numpy as np
 
 mt = Actuarial(nt=FIN, i=0.12/12) #FIN = Financial table

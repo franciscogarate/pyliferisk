@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from pyliferisk import *
 
 print(qx.__doc__)

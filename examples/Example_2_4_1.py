@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from pyliferisk import *
 from pyliferisk.mortalitytables import GKM80
 

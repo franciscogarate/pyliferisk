@@ -1,9 +1,8 @@
-#!/usr/bin/python
 import pyliferisk as life
-from pyliferisk.mortalitytables import SPAIN_PASEM2010M
+from pyliferisk.mortalitytables import PASEM2020_M_NoRel_1orden
 import numpy as np
 
-mt = life.MortalityTable(nt=SPAIN_PASEM2010M)
+mt = life.MortalityTable(nt=PASEM2020_M_NoRel_1orden)
 
 age = 67				
 initial_payment = 8000
@@ -16,6 +15,6 @@ for y in range(0, mt.w-age):
 
 payments = [initial_payment]
 for x in range(0, mt.w-age-1):
-	payments.append(payments[x] * (1 + incr) * (1 - mt.qx[age+x] / 1000))
+	payments.append(payments[x] * (1 + incr) * (1 - mt.qx[age+x]))
 
 print('Premium:', np.dot(payments, discount_factor).round(2))

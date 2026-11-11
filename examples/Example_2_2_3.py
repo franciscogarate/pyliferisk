@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from pyliferisk import MortalityTable
 from pyliferisk.mortalitytables import GKM95
 import numpy as np

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import pandas as pd
 from pyliferisk import MortalityTable
 
@@ -14,5 +13,5 @@ print('Die in the tenth decade of life:', (mt.lx[90]-mt.lx[100])/mt.lx[20])
 
 print('Probability of death between 50 and 51:', 
 	(mt.lx[50] - mt.lx[51]) / mt.lx[50])
-print('Likewise with qx:', mt.qx[50] / 1000)
+print('Likewise with qx:', mt.qx[50])
 print('Ultimate age:', mt.w)

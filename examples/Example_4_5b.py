@@ -1,10 +1,9 @@
-#!/usr/bin/python
 from pyliferisk import *
 from pyliferisk.mortalitytables import INM05
 import numpy as np
 import pandas as pd
 
-rfr = pd.read_excel('EIOPA_RFR_20161231_Term_Structures.xlsx', sheet_name='RFR_spot_no_VA', 
+rfr = pd.read_excel('EIOPA_RFR_20251231_Term_Structures.xlsx', sheet_name='RFR_spot_no_VA', 
 					skiprows=9, usecols='C:C', names=['Euro'])
 
 tariff  = Actuarial(nt=INM05, i=0.05)

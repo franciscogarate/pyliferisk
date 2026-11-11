@@ -1,6 +1,5 @@
-#!/usr/bin/python
 from pyliferisk import *
-from pyliferisk.mortalitytables import SPAININE2004, GKM95
+from pyliferisk.mortalitytables import GKM80
 import csv
 
 mt = Actuarial(nt=GKM80, i=0.04)

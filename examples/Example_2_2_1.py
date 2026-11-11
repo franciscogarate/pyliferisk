@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from pyliferisk import Actuarial, Ax
 from pyliferisk.mortalitytables import GKM95
 
